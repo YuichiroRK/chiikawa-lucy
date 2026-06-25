@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #fff5f7; /* softWhite */
+  color: #5c4a4d; /* textCute */
+}
