@@ -1,22 +1,34 @@
-FROM node:20-alpine
+# Stage 1: Build
+FROM node:20-alpine AS builder
 
-# Establecer el directorio de trabajo en el contenedor
 WORKDIR /app
 
-# Copiar primero los archivos de dependencias para aprovechar la caché de Docker
+# Copiar archivos de dependencias
 COPY package*.json ./
 
-# Instalar las dependencias
+# Instalar dependencias
 RUN npm install
 
-# Copiar el resto del código del frontend
+# Copiar código fuente
 COPY . .
 
-# Construir la aplicación Next.js para producción
+# Construir la aplicación Next.js
 RUN npm run build
 
-# Exponer el puerto que usará Next.js (el cual Nginx leerá en la red interna)
+# Stage 2: Production
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Copiar solo lo necesario para producción
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/next.config.ts ./
+
 EXPOSE 3000
 
-# Comando para iniciar la aplicación
 CMD ["npm", "start"]

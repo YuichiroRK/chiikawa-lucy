@@ -1,8 +1,456 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap');
+
+/* ═══════════════════════════════════════════════
+   🌸 CHIIKAWA TAMAGOTCHI - Tailwind v4 Theme
+   Kawaii / Coquette Aesthetic for Lucy
+   ═══════════════════════════════════════════════ */
+
+@theme {
+  /* ─── Color Palette ─── */
+  --color-pastel-pink: #ffd1dc;
+  --color-kawaii-pink: #ffb7c5;
+  --color-soft-white: #fff5f7;
+  --color-coquette-lilac: #e8d5e0;
+  --color-sakura-pink: #ffb3ba;
+  --color-warm-cream: #fff8f0;
+  --color-text-cute: #5c4a4d;
+  --color-text-soft: #8b7a7d;
+  --color-accent-coral: #ff8fa3;
+  --color-accent-peach: #ffcba4;
+  --color-accent-lavender: #c9b1ff;
+  --color-accent-mint: #b5ead7;
+  --color-accent-sky: #a0d2db;
+  --color-accent-gold: #ffe066;
+  --color-spotify-green: #1db954;
+  --color-deep-pink: #ff6b9d;
+  --color-glass-white: rgba(255, 255, 255, 0.65);
+  --color-glass-pink: rgba(255, 209, 220, 0.35);
+  --color-overlay-dark: rgba(92, 74, 77, 0.5);
+
+  /* ─── Font Families ─── */
+  --font-heading: 'Quicksand', sans-serif;
+  --font-body: 'Nunito', sans-serif;
+
+  /* ─── Border Radius ─── */
+  --radius-kawaii: 1.5rem;
+  --radius-pill: 9999px;
+  --radius-bubble: 2rem;
+
+  /* ─── Shadows ─── */
+  --shadow-kawaii: 0 4px 20px rgba(255, 183, 197, 0.3);
+  --shadow-kawaii-lg: 0 8px 40px rgba(255, 183, 197, 0.4);
+  --shadow-glow-pink: 0 0 20px rgba(255, 183, 197, 0.5);
+  --shadow-glow-gold: 0 0 20px rgba(255, 224, 102, 0.5);
+  --shadow-float: 0 10px 30px rgba(255, 183, 197, 0.25);
+
+  /* ─── Animations ─── */
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-bounce-soft: bounce-soft 2s ease-in-out infinite;
+  --animate-sparkle: sparkle 1.5s ease-in-out infinite;
+  --animate-fade-in: fadeIn 0.6s ease-out forwards;
+  --animate-fade-in-up: fadeInUp 0.6s ease-out forwards;
+  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
+  --animate-shake: shake 0.5s ease-in-out;
+  --animate-slide-up: slideUp 0.4s ease-out forwards;
+  --animate-spin-slow: spin-slow 8s linear infinite;
+  --animate-wiggle: wiggle 1s ease-in-out infinite;
+  --animate-heartbeat: heartbeat 1.2s ease-in-out infinite;
+  --animate-particle-rise: particle-rise 6s linear infinite;
+  --animate-typewriter: typewriter 2s steps(30) forwards;
+}
+
+/* ═══════════════════════════════════════════════
+   🎀 Keyframe Animations
+   ═══════════════════════════════════════════════ */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes bounce-soft {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.03); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  50% { opacity: 0.6; transform: scale(1.2) rotate(180deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(255, 183, 197, 0.3); }
+  50% { box-shadow: 0 0 25px rgba(255, 183, 197, 0.6), 0 0 50px rgba(255, 183, 197, 0.3); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.15); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.1); }
+  56% { transform: scale(1); }
+}
+
+@keyframes particle-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(100vh) translateX(0) rotate(0deg) scale(0.5);
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20vh) translateX(30px) rotate(360deg) scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideOutRight {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(100%); }
+}
+
+@keyframes progress-shrink {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+@keyframes envelope-open {
+  0% { transform: rotateX(0deg); }
+  100% { transform: rotateX(-180deg); }
+}
+
+@keyframes vinyl-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════════════
+   ✨ Base Styles
+   ═══════════════════════════════════════════════ */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
-  background-color: #fff5f7; /* softWhite */
-  color: #5c4a4d; /* textCute */
+  font-family: var(--font-body);
+  background: linear-gradient(135deg, var(--color-soft-white) 0%, var(--color-pastel-pink) 50%, var(--color-warm-cream) 100%);
+  color: var(--color-text-cute);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+/* ═══════════════════════════════════════════════
+   🪟 Glassmorphism Utilities
+   ═══════════════════════════════════════════════ */
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-kawaii);
+  box-shadow: var(--shadow-kawaii);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow-kawaii-lg);
+  transform: translateY(-2px);
+}
+
+.glass-card-solid {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 183, 197, 0.3);
+  border-radius: var(--radius-kawaii);
+  box-shadow: var(--shadow-kawaii);
+}
+
+.glass-nav {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 -4px 30px rgba(255, 183, 197, 0.2);
+}
+
+/* ═══════════════════════════════════════════════
+   🎨 Animated Background
+   ═══════════════════════════════════════════════ */
+
+.bg-kawaii-gradient {
+  background: linear-gradient(135deg, #fff5f7 0%, #ffd1dc 30%, #ffb3ba 60%, #fff8f0 100%);
+  background-size: 300% 300%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ═══════════════════════════════════════════════
+   💫 Particle Effects (CSS Only)
+   ═══════════════════════════════════════════════ */
+
+.particle-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  bottom: -20px;
+  animation: particle-rise var(--particle-duration, 6s) linear infinite;
+  animation-delay: var(--particle-delay, 0s);
+  font-size: var(--particle-size, 1.2rem);
+  opacity: 0;
+}
+
+/* ═══════════════════════════════════════════════
+   📜 Custom Scrollbar
+   ═══════════════════════════════════════════════ */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-soft-white);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-kawaii-pink), var(--color-pastel-pink));
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--color-deep-pink), var(--color-kawaii-pink));
+}
+
+/* ═══════════════════════════════════════════════
+   🎀 Utility Classes
+   ═══════════════════════════════════════════════ */
+
+.text-gradient-pink {
+  background: linear-gradient(135deg, var(--color-kawaii-pink), var(--color-deep-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, var(--color-accent-gold), #ffa500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.border-kawaii {
+  border: 2px solid rgba(255, 183, 197, 0.4);
+}
+
+.btn-kawaii {
+  background: linear-gradient(135deg, var(--color-kawaii-pink), var(--color-sakura-pink));
+  color: white;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  padding: 0.75rem 1.5rem;
+  box-shadow: var(--shadow-kawaii);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-kawaii:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: var(--shadow-kawaii-lg);
+}
+
+.btn-kawaii:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.shimmer-effect {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.locked-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.locked-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 245, 247, 0.7);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border-radius: inherit;
+}
+
+/* ═══════════════════════════════════════════════
+   🎵 Vinyl Record
+   ═══════════════════════════════════════════════ */
+
+.vinyl-record {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #1a1a1a, #333, #1a1a1a, #333, #1a1a1a);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vinyl-record::after {
+  content: '';
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--color-kawaii-pink);
+  position: absolute;
+}
+
+.vinyl-spinning {
+  animation: vinyl-spin 3s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════
+   ✉️ Envelope Animation
+   ═══════════════════════════════════════════════ */
+
+.envelope-flap {
+  transform-origin: top center;
+  transition: transform 0.6s ease;
+}
+
+.envelope-open .envelope-flap {
+  transform: rotateX(-180deg);
+}
+
+/* ═══════════════════════════════════════════════
+   📱 Responsive Helpers
+   ═══════════════════════════════════════════════ */
+
+.safe-bottom {
+  padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+}
+
+.nav-height {
+  height: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* ═══════════════════════════════════════════════
+   🌸 Selection & Focus Styles
+   ═══════════════════════════════════════════════ */
+
+::selection {
+  background: var(--color-kawaii-pink);
+  color: white;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-kawaii-pink);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════════
+   ♿ Reduced Motion
+   ═══════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .particle-container {
+    display: none;
+  }
 }
