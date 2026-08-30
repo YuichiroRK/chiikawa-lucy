@@ -5,6 +5,8 @@ import { useGameState } from "@/hooks/useGameState";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useTheme } from "@/hooks/useTheme";
 import { useEasterEggs } from "@/hooks/useEasterEggs";
+import { useEffect, useRef } from 'react';
+import { ACHIEVEMENTS } from '@/utils/gameData';
 
 export default function App({ Component, pageProps }: AppProps) {
   const gameState = useGameState();
@@ -14,6 +16,25 @@ export default function App({ Component, pageProps }: AppProps) {
     if (easterEggId === 'ee-witching-hour') void gameState.doUnlockAchievement('ach-night-owl');
   });
   const { notifications, removeNotification, addNotification } = useNotifications();
+  const seenProgress = useRef<{ achievements: string[]; letters: string[] } | null>(null);
+  useEffect(() => {
+    if (gameState.loading) return;
+    const achievements = gameState.progress.achievements.map((item) => item.id);
+    const letters = gameState.progress.letters.map((item) => item.id);
+    if (!seenProgress.current) {
+      seenProgress.current = { achievements, letters };
+      return;
+    }
+    const previous = seenProgress.current;
+    achievements.filter((id) => !previous.achievements.includes(id)).forEach((id) => {
+      const achievement = ACHIEVEMENTS.find((item) => item.id === id);
+      addNotification(`¡Logro desbloqueado! ${achievement?.name || 'Nuevo logro'}`, 'achievement');
+    });
+    letters.filter((id) => !previous.letters.includes(id)).forEach(() => {
+      addNotification('¡Has recibido una nueva cartita!', 'success', '💌');
+    });
+    seenProgress.current = { achievements, letters };
+  }, [gameState.loading, gameState.progress.achievements, gameState.progress.letters, addNotification]);
   const { activeTheme, isThemeUnlocked, setActiveThemeId } = useTheme(gameState.progress.theme, {
     streakDays: gameState.streak.currentStreak,
     achievementCount: gameState.unlockedAchievementCount,

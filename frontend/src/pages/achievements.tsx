@@ -1,8 +1,10 @@
 import Head from 'next/head';
+import { useState } from 'react';
 import { ACHIEVEMENTS } from '@/utils/gameData';
 
 export default function Achievements({ gameState }: any) {
   const { isAchievementUnlocked } = gameState;
+  const [filter, setFilter] = useState('todos');
   
   // Agrupar por categoría
   const categories = ['cuidado', 'exploración', 'dedicación', 'secreto'];
@@ -31,8 +33,22 @@ export default function Achievements({ gameState }: any) {
         </p>
       </div>
 
+      <div className="flex flex-wrap justify-center gap-2 mb-6" role="tablist" aria-label="Filtrar logros">
+        {['todos', ...categories].map((category) => (
+          <button
+            key={category}
+            type="button"
+            onClick={() => setFilter(category)}
+            className={`rounded-full px-4 py-2 text-xs font-bold transition-all ${filter === category ? 'bg-deep-pink text-white' : 'sticker-card bg-white/70 text-text-soft'}`}
+          >
+            {category === 'todos' ? '✨ Todos' : category}
+          </button>
+        ))}
+      </div>
+
       <div className="paper-surface sticker-card rounded-3xl p-4 sm:p-6 space-y-8">
         {categories.map((cat, catIndex) => {
+          if (filter !== 'todos' && filter !== cat) return null;
           const catAchievements = ACHIEVEMENTS.filter(a => a.category === cat);
           if (catAchievements.length === 0) return null;
 
