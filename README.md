@@ -1,143 +1,183 @@
-# 🌸 Chiikawa Tamagotchi — Para Lucy
+# Chiikawa Tamagotchi
 
-Una página web personalizada con estética kawaii/coquette donde puedes cuidar un Chiikawa mientras descubres canciones, cartas y secretos.
+> Una experiencia web fullstack, persistente y responsive para cuidar una mascota virtual, descubrir contenido y desbloquear secretos.
 
-## 🏗️ Arquitectura
+Chiikawa Tamagotchi es un proyecto de portfolio que combina una interfaz emocional con una arquitectura web completa. El usuario puede cuidar a Chiikawa, consultar cómo evoluciona su estado, desbloquear cartas y logros, escuchar una playlist, cambiar de tema y descubrir easter eggs.
 
+El foco del proyecto está en demostrar criterio de producto además de implementación: una experiencia clara en móvil, feedback inmediato, estado persistente y una separación limpia entre frontend, API y almacenamiento.
+
+## Por qué este proyecto destaca
+
+- **Producto con identidad:** diseño kawaii de papelería digital, con sistema visual consistente y microinteracciones.
+- **UX orientada a hábitos:** rachas, degradación temporal de estadísticas, recompensas y contenido desbloqueable.
+- **Fullstack real:** frontend en Next.js y TypeScript, API REST en Express y persistencia en SQLite.
+- **Arquitectura desplegable:** servicios aislados con Docker Compose y Nginx como reverse proxy.
+- **Responsive by design:** navegación inferior en móvil, navegación lateral en desktop y targets táctiles accesibles.
+- **Estado y reglas de negocio:** acciones del usuario, progreso, temas, logros y secretos se validan y persisten desde el backend.
+
+## Stack
+
+| Capa | Tecnologías |
+| --- | --- |
+| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS v4 |
+| Backend | Node.js, Express 4, REST API |
+| Datos | SQLite, `sqlite3` |
+| Infraestructura | Docker, Docker Compose, Nginx |
+| Experiencia | CSS animations, temas dinámicos, responsive navigation |
+
+## Arquitectura
+
+```text
+Cliente
+  |
+  v
+Nginx :80
+  |----------------------|
+  v                      v
+Next.js :3000       Express :5000
+                         |
+                         v
+                    SQLite
 ```
-Internet → Cloudflare Tunnel → Nginx (puerto 80) → Frontend (Next.js :3000) / Backend (Express :5000)
+
+El proxy centraliza el acceso público, mientras que frontend y backend se ejecutan como servicios independientes. La base de datos se monta como volumen de Docker para conservar el progreso al reiniciar el contenedor.
+
+## Funcionalidades
+
+### Mascota virtual
+
+- Estados de felicidad, hambre y sueño.
+- Acciones de comida, mimos, juego y descanso.
+- Degradación de estadísticas según el tiempo transcurrido.
+- Sprites pixel art que reflejan el estado actual.
+- Diálogo contextual y feedback visual después de cada acción.
+
+### Progreso y contenido
+
+- Cartas desbloqueables mediante visitas, rachas y logros.
+- 13 logros agrupados por cuidado, exploración, dedicación y secretos.
+- Galería de sprites, fondos y stickers.
+- Playlist integrada con enlaces a Spotify y mensajes personalizados.
+- Temas estacionales: default, Sakura, invierno, Halloween y Navidad.
+
+### Exploración
+
+- Konami Code y palabra secreta.
+- Easter egg de hora mágica.
+- Recompensa por repetir mimos rápidamente.
+- Zona secreta con requisitos acumulativos de progreso.
+
+## API
+
+### Health check
+
+```http
+GET /health
 ```
 
-### Contenedores Docker
-| Servicio | Puerto | Descripción |
-|----------|--------|-------------|
-| **nginx** | 80 | Proxy reverso, cache de assets, gzip |
-| **frontend** | 3000 | Next.js + TypeScript + Tailwind CSS v4 |
-| **backend** | 5000 | Express + SQLite |
+### Tamagotchi
 
-## 🚀 Setup Local
+```http
+GET  /tamagotchi/status
+POST /tamagotchi/action
+```
+
+### Progreso
+
+```http
+GET  /progress/streak
+GET  /progress/secret
+POST /progress/letters/unlock
+POST /progress/songs/view
+POST /progress/achievements/unlock
+POST /progress/easter-eggs/find
+POST /progress/theme
+POST /progress/secret/unlock
+```
+
+## Ejecución con Docker
 
 ### Requisitos
-- Docker y Docker Compose instalados
 
-### Ejecución
+- Docker Desktop
+- Docker Compose
+
+### Levantar el proyecto
+
 ```bash
-# Construir y levantar todos los contenedores
-docker-compose up --build
-
-# La web estará disponible en http://localhost
+docker compose up --build
 ```
 
-### Desarrollo (sin Docker)
+La aplicación quedará disponible en `http://localhost`.
+
+### Detener servicios
+
 ```bash
-# Backend
+docker compose down
+```
+
+## Desarrollo sin Docker
+
+Instalar dependencias en cada aplicación:
+
+```bash
 cd backend
 npm install
 npm run dev
+```
 
-# Frontend (en otra terminal)
+En otra terminal:
+
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-## 📁 Estructura del Proyecto
+El frontend usa `/api` como base pública cuando se ejecuta detrás de Nginx. Para desarrollo directo, configura `NEXT_PUBLIC_API_URL` según la URL del backend.
 
-```
-chiikawa-lucy/
-├── docker-compose.yml
-├── nginx/
-│   ├── Dockerfile
-│   └── nginx.conf
-├── frontend/
-│   ├── Dockerfile
-│   ├── package.json
-│   ├── public/
-│   │   ├── images/          # Sprites del personaje (pixel art)
-│   │   ├── backgrounds/     # Fondos temáticos
-│   │   ├── stickers/        # Stickers kawaii
-│   │   └── icons/           # Iconos de navegación
-│   └── src/
-│       ├── pages/           # Páginas (Home, Tamagotchi, Cartas, Música, Logros, Galería, Secreto)
-│       ├── components/      # Componentes reutilizables
-│       ├── hooks/           # Hooks personalizados (estado, easter eggs, temas, notificaciones)
-│       ├── utils/           # API client, datos del juego
-│       └── styles/          # CSS global con Tailwind v4
+## Estructura
+
+```text
+.
 ├── backend/
-│   ├── Dockerfile
-│   ├── server.js
-│   ├── routes/              # Rutas de API
-│   ├── controllers/         # Lógica de negocio
-│   └── database/
-│       ├── db.js            # Conexión SQLite
-│       ├── schema.sql       # Esquema de la BD
-│       └── sqlite.db        # Base de datos
+│   ├── controllers/       # Reglas de negocio y respuestas HTTP
+│   ├── database/          # Esquema y conexión SQLite
+│   ├── routes/            # Endpoints REST
+│   └── server.js          # Bootstrap de Express
+├── frontend/
+│   ├── public/             # Sprites, fondos y recursos visuales
+│   └── src/
+│       ├── components/    # UI reutilizable y layout
+│       ├── hooks/         # Estado, temas, notificaciones y easter eggs
+│       ├── pages/         # Rutas de la aplicación
+│       ├── styles/        # Tokens y estilos globales
+│       └── utils/         # Cliente API y datos del juego
+├── nginx/                  # Reverse proxy y configuración de producción
+├── docker-compose.yml
 └── README.md
 ```
 
-## 🎮 Funcionalidades
+## Decisiones técnicas
 
-### 🐹 Tamagotchi
-- 3 estadísticas: ❤️ Felicidad, 🍓 Hambre, 😴 Sueño
-- 4 acciones: Comida, Mimos, Jugar, Dormir
-- Degradación de stats por tiempo sin visitar
-- Animaciones pixel art por estado
+- **Next.js Pages Router:** navegación simple y estable para una aplicación pequeña con varias vistas.
+- **Hooks especializados:** encapsulan estado de juego, temas, notificaciones y detección de secretos sin acoplar la UI a la API.
+- **SQLite:** solución ligera y suficiente para un producto personal, con persistencia local y cero infraestructura externa.
+- **Docker Compose:** permite reproducir el entorno completo con un único comando.
+- **Nginx:** separa el tráfico público del frontend y la API, y deja preparada la aplicación para un despliegue detrás de Cloudflare Tunnel.
 
-### 💌 Cartas
-- 3 cartas desbloqueables + 1 carta secreta
-- Desbloqueo por: visitas, días consecutivos, logros
-- Tipografía manuscrita estilizada
+## Personalización
 
-### 🎵 Música
-- 8 canciones de la playlist "CHIIKAWA SONGS:3"
-- Enlaces directos a Spotify
-- Mensajes personalizados por canción
+El contenido del juego se centraliza en `frontend/src/utils/gameData.ts`. Desde ahí se pueden modificar cartas, canciones, logros, temas y condiciones de desbloqueo sin tocar los componentes de presentación.
 
-### 🏆 Logros
-- 13 logros desbloqueables
-- Categorías: cuidado, exploración, persistencia
-- Verificación automática de condiciones
+## Despliegue
 
-### 📸 Galería
-- Stickers pixel art
-- Sprites del personaje
-- Fondos temáticos
+Para exponer la aplicación de forma segura:
 
-### 🥚 Easter Eggs
-- Konami Code (↑↑↓↓←→←→BA)
-- Palabra secreta ("chiikawa")
-- Hora mágica (3:33 AM)
-- Triple Mimos (3 mimos en 5 segundos)
-- Y más...
+1. Ejecutar `docker compose up -d` en el servidor.
+2. Configurar Cloudflare Tunnel apuntando a `http://localhost:80`.
+3. Mantener el backend sin exposición pública directa y dejar que Nginx gestione el tráfico.
 
-### 🔒 Zona Secreta
-Requisitos: 5+ logros, 3+ easter eggs, 7+ días consecutivos, todas las cartas
+## Autor
 
-### 🌸 Temas
-- Default (rosa pastel)
-- Sakura (primavera)
-- Invierno (nieve)
-- Halloween (calabazas kawaii)
-- Navidad (luces festivas)
-
-## ✏️ Personalización
-
-### Editar Cartas
-Las cartas están en `frontend/src/utils/gameData.ts` en el array `LETTERS`. Cada carta tiene:
-- `title`: Título de la carta
-- `content`: Texto del mensaje
-- `unlockCondition`: Descripción de cómo se desbloquea
-
-### Editar Canciones
-Las canciones están en `frontend/src/utils/gameData.ts` en el array `SONGS`. Cada canción tiene:
-- `name`, `artist`: Datos de la canción
-- `spotifyUrl`: Enlace de Spotify
-- `message`: Mensaje personalizado
-
-## 🌐 Deploy con Cloudflare Tunnel
-
-1. Levantar Docker: `docker-compose up -d`
-2. Configurar Cloudflare Tunnel apuntando a `http://localhost:80`
-3. El tunnel enrutará el tráfico a Nginx que distribuye entre frontend y backend
-
-## 💕 Hecho con amor 🌸
+Proyecto desarrollado como muestra de ingeniería fullstack: diseño de producto, frontend responsive, API REST, persistencia, containerización y despliegue.
