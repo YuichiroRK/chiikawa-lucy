@@ -9,7 +9,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const gameState = useGameState();
   const { notifications, removeNotification, addNotification } = useNotifications();
   const { activeTheme, isThemeUnlocked, setActiveThemeId } = useTheme(gameState.progress.theme, {
-    streakDays: gameState.streak.longestStreak,
+    streakDays: gameState.streak.currentStreak,
     achievementCount: gameState.unlockedAchievementCount,
     hasFoundEasterEgg: gameState.foundEasterEggCount > 0,
     hasSecretZone: gameState.isAchievementUnlocked('ach-secret-zone')

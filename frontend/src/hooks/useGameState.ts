@@ -79,13 +79,11 @@ export function useGameState(): GameState & GameActions {
   const refreshState = useCallback(async () => {
     try {
       setError(null);
-      const [statusRes, streakRes] = await Promise.allSettled([
-        fetchStatus(),
-        getStreak(),
-      ]);
+      const statusRes = await fetchStatus();
+      const streakRes = await getStreak();
 
-      if (statusRes.status === 'fulfilled' && statusRes.value.success) {
-        const data = statusRes.value.data;
+      if (statusRes.success) {
+        const data = statusRes.data;
         setStats({
           happiness: data.happiness,
           hunger: data.hunger,
@@ -97,10 +95,10 @@ export function useGameState(): GameState & GameActions {
         }
       }
 
-      if (streakRes.status === 'fulfilled' && streakRes.value.success) {
+      if (streakRes.success) {
         setStreak({
-          currentStreak: streakRes.value.data.currentStreak,
-          longestStreak: streakRes.value.data.longestStreak,
+          currentStreak: streakRes.data.currentStreak ?? streakRes.data.consecutiveDays ?? 0,
+          longestStreak: streakRes.data.longestStreak ?? streakRes.data.consecutiveDays ?? 0,
         });
       }
     } catch (err) {
@@ -156,6 +154,24 @@ export function useGameState(): GameState & GameActions {
       if (res.success) {
         setStats(res.stats);
         setMood(res.animation || 'happy');
+        if (res.achievements) {
+          setProgress((prev) => ({
+            ...prev,
+            achievements: res.achievements!.map((id) => ({
+              id,
+              unlockedAt: new Date().toISOString(),
+            })),
+          }));
+        }
+        if (res.unlockedLetters) {
+          setProgress((prev) => ({
+            ...prev,
+            letters: res.unlockedLetters!.map((id) => ({
+              id,
+              unlockedAt: new Date().toISOString(),
+            })),
+          }));
+        }
       }
     } catch (err) {
       console.error('Action error:', err);
@@ -174,10 +190,10 @@ export function useGameState(): GameState & GameActions {
   // ── Progress actions ──
   const doUnlockLetter = useCallback(async (letterId: string) => {
     try {
-      await unlockLetter(letterId);
-      setProgress((prev) => ({
-        ...prev,
-        letters: [...prev.letters, { id: letterId, unlockedAt: new Date().toISOString() }],
+        const response = await unlockLetter(letterId);
+        setProgress((prev) => ({
+          ...prev,
+          letters: response.unlockedLetters?.map((id) => ({ id, unlockedAt: new Date().toISOString() })) || prev.letters,
       }));
     } catch (err) {
       console.error('Unlock letter error:', err);
@@ -186,8 +202,11 @@ export function useGameState(): GameState & GameActions {
 
   const doViewSong = useCallback(async (songId: string) => {
     try {
-      await viewSong(songId);
+      const response = await viewSong(songId);
       setProgress((prev) => {
+        if (response.viewedSongs) {
+          return { ...prev, songs: response.viewedSongs.map((id) => ({ id, viewedAt: new Date().toISOString() })) };
+        }
         if (prev.songs.some((s) => s.id === songId)) return prev;
         return {
           ...prev,
@@ -201,8 +220,11 @@ export function useGameState(): GameState & GameActions {
 
   const doUnlockAchievement = useCallback(async (achievementId: string) => {
     try {
-      await unlockAchievement(achievementId);
-      setProgress((prev) => {
+        const response = await unlockAchievement(achievementId);
+        setProgress((prev) => {
+        if (response.unlockedAchievements) {
+          return { ...prev, achievements: response.unlockedAchievements.map((id) => ({ id, unlockedAt: new Date().toISOString() })) };
+        }
         if (prev.achievements.some((a) => a.id === achievementId)) return prev;
         return {
           ...prev,
@@ -216,9 +238,12 @@ export function useGameState(): GameState & GameActions {
 
   const doFindEasterEgg = useCallback(async (easterEggId: string) => {
     try {
-      await findEasterEgg(easterEggId);
+        const response = await findEasterEgg(easterEggId);
       setProgress((prev) => {
-        if (prev.easterEggs.some((e) => e.id === easterEggId)) return prev;
+          if (response.foundEasterEggs) {
+            return { ...prev, easterEggs: response.foundEasterEggs.map((id) => ({ id, foundAt: new Date().toISOString() })) };
+          }
+          if (prev.easterEggs.some((e) => e.id === easterEggId)) return prev;
         return {
           ...prev,
           easterEggs: [...prev.easterEggs, { id: easterEggId, foundAt: new Date().toISOString() }],
@@ -265,6 +290,67 @@ export function useGameState(): GameState & GameActions {
       if (cooldownTimer.current) clearTimeout(cooldownTimer.current);
     };
   }, []);
+
+  // ── Auto-unlock achievements based on progress ──
+  useEffect(() => {
+    if (loading) return;
+
+    const checkAutoUnlocks = async () => {
+      // Primera Visita
+      if (progress.visitCount >= 1 && !isAchievementUnlocked('ach-first-visit')) {
+        await doUnlockAchievement('ach-first-visit');
+      }
+
+      // Todas las canciones (8 canciones)
+      if (progress.songs.length >= 8 && !isAchievementUnlocked('ach-all-songs')) {
+        await doUnlockAchievement('ach-all-songs');
+      }
+
+      // Leer una carta
+      if (progress.letters.length >= 1 && !isAchievementUnlocked('ach-read-letter')) {
+        await doUnlockAchievement('ach-read-letter');
+      }
+
+      // Encontrar easter egg
+      if (progress.easterEggs.length >= 1 && !isAchievementUnlocked('ach-easter-egg')) {
+        await doUnlockAchievement('ach-easter-egg');
+      }
+
+      // Cambio de tema
+      if (progress.theme !== 'theme-default' && !isAchievementUnlocked('ach-theme-change')) {
+        await doUnlockAchievement('ach-theme-change');
+      }
+
+      // Búho Nocturno (3:00 AM - 3:59 AM)
+      const hour = new Date().getHours();
+      if (hour === 3 && !isAchievementUnlocked('ach-night-owl')) {
+        await doUnlockAchievement('ach-night-owl');
+      }
+
+      // Todas las acciones (necesita las 4 primeras)
+      if (
+        isAchievementUnlocked('ach-first-feed') &&
+        isAchievementUnlocked('ach-first-play') &&
+        isAchievementUnlocked('ach-first-pet') &&
+        isAchievementUnlocked('ach-first-sleep') &&
+        !isAchievementUnlocked('ach-all-actions')
+      ) {
+        await doUnlockAchievement('ach-all-actions');
+      }
+    };
+
+    checkAutoUnlocks();
+  }, [
+    loading,
+    progress.visitCount,
+    progress.songs.length,
+    progress.letters.length,
+    progress.easterEggs.length,
+    progress.theme,
+    progress.achievements.length,
+    isAchievementUnlocked,
+    doUnlockAchievement
+  ]);
 
   return {
     stats,

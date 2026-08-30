@@ -139,7 +139,7 @@ exports.setTheme = async (req, res) => {
         return res.status(400).json({ success: false, message: 'theme is required' });
     }
 
-    const allowedThemes = ['default', 'sakura', 'night', 'ocean', 'chiikawa', 'hachiware', 'usagi'];
+    const allowedThemes = ['theme-default', 'theme-sakura', 'theme-winter', 'theme-halloween', 'theme-christmas'];
 
     if (!allowedThemes.includes(theme)) {
         return res.status(400).json({
@@ -175,9 +175,13 @@ exports.getStreak = async (req, res) => {
 
         res.json({
             success: true,
-            consecutiveDays: state.consecutive_days || 0,
-            lastVisitDate: state.last_visit_date || null,
-            totalHearts: state.total_hearts || 0,
+            data: {
+                currentStreak: state.consecutive_days || 0,
+                longestStreak: state.consecutive_days || 0,
+                consecutiveDays: state.consecutive_days || 0,
+                totalHearts: state.total_hearts || 0,
+                lastVisit: state.last_visit_date || null,
+            },
         });
     } catch (error) {
         console.error('getStreak error:', error);
@@ -211,7 +215,7 @@ exports.checkSecret = async (req, res) => {
         const letters      = parseJsonArray(state.unlocked_letters);
         const streak       = state.consecutive_days || 0;
 
-        const requiredLetters = ['letter_1', 'letter_2', 'letter_3'];
+        const requiredLetters = ['letter-1', 'letter-2', 'letter-3'];
         const hasAllLetters   = requiredLetters.every((l) => letters.includes(l));
 
         const conditions = {
@@ -264,7 +268,7 @@ exports.unlockSecret = async (req, res) => {
         const letters      = parseJsonArray(state.unlocked_letters);
         const streak       = state.consecutive_days || 0;
 
-        const requiredLetters = ['letter_1', 'letter_2', 'letter_3'];
+        const requiredLetters = ['letter-1', 'letter-2', 'letter-3'];
         const hasAllLetters   = requiredLetters.every((l) => letters.includes(l));
 
         if (achievements.length < 5 || easterEggs.length < 3 || streak < 7 || !hasAllLetters) {
@@ -274,7 +278,12 @@ exports.unlockSecret = async (req, res) => {
             });
         }
 
-        await run(`UPDATE user_profile SET secret_zone_unlocked = 1 WHERE id = 1`);
+        await run(
+            `UPDATE user_profile SET secret_zone_unlocked = 1,
+                unlocked_letters = ?, unlocked_achievements = ? WHERE id = 1`,
+            [JSON.stringify([...letters, 'letter-secret']),
+                JSON.stringify([...achievements, 'ach-secret-zone'])]
+        );
 
         res.json({
             success: true,

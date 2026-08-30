@@ -56,6 +56,8 @@ export interface ActionResponse {
   dialogue: string;
   animation: string;
   mood: string;
+  achievements?: string[];
+  unlockedLetters?: string[];
 }
 
 export interface StreakResponse {
@@ -64,6 +66,8 @@ export interface StreakResponse {
     currentStreak: number;
     longestStreak: number;
     lastVisit: string;
+    consecutiveDays?: number;
+    totalHearts?: number;
   };
 }
 
@@ -78,6 +82,11 @@ export interface SecretResponse {
 export interface GenericResponse {
   success: boolean;
   message?: string;
+  unlockedLetters?: string[];
+  unlockedAchievements?: string[];
+  foundEasterEggs?: string[];
+  viewedSongs?: string[];
+  alreadyUnlocked?: boolean;
 }
 
 // ─── Helper ───
