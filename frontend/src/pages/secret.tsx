@@ -44,45 +44,28 @@ export default function Secret({ gameState, activeTheme, setActiveThemeId, isThe
 
       <div className="sticker-card paper-surface p-6 mb-8 animate-slide-up rounded-3xl">
         <h2 className="text-xl font-bold text-text-cute mb-4 flex items-center">
-          <span className="mr-2">🎨</span> Personaliza tu mundo
+          <span className="mr-2">🗝️</span> Recompensa exclusiva
         </h2>
-        <p className="text-sm text-text-soft mb-4">Elige el ambiente que más te guste para hoy:</p>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {THEMES.map((theme) => {
-            const unlocked = isThemeUnlocked(theme.id);
-            const isActive = activeTheme.id === theme.id;
-            
-            return (
-              <button
-                key={theme.id}
-                onClick={() => {
-                  if (unlocked && !isActive) {
-                    setActiveThemeId(theme.id);
-                    addNotification(`Tema cambiado a ${theme.name} ${theme.emoji}`, 'success');
-                  }
-                }}
-                className={`
-                  p-4 rounded-xl border-2 flex items-center justify-between text-left transition-all
-                  ${isActive ? 'border-deep-pink bg-white/60 shadow-md transform scale-105' : 
-                    unlocked ? 'border-pastel-pink bg-white/30 hover:bg-white/50' : 
-                    'border-gray-200 bg-gray-50/30 opacity-70 cursor-not-allowed'}
-                `}
-              >
-                <div className="flex items-center">
-                  <span className="text-2xl mr-3">{unlocked ? theme.emoji : '🔒'}</span>
-                  <div>
-                    <h3 className={`font-bold text-sm ${isActive ? 'text-deep-pink' : 'text-text-cute'}`}>
-                      {theme.name}
-                    </h3>
-                    {!unlocked && <p className="text-[10px] text-text-soft">Bloqueado</p>}
-                  </div>
-                </div>
-                {isActive && <span className="text-deep-pink font-bold text-xl">✓</span>}
-              </button>
-            );
-          })}
-        </div>
+        <p className="text-sm text-text-soft mb-4">Los temas normales se pueden elegir desde tu Tamagotchi. Aquí queda el ambiente reservado para quienes descubren este rincón.</p>
+        {(() => {
+          const christmas = THEMES.find((theme) => theme.id === 'theme-christmas');
+          if (!christmas) return null;
+          const isActive = activeTheme.id === christmas.id;
+          return (
+            <button
+              onClick={() => {
+                if (!isActive) {
+                  setActiveThemeId(christmas.id);
+                  addNotification(`Tema cambiado a ${christmas.name} ${christmas.emoji}`, 'success');
+                }
+              }}
+              className="sticker-card w-full rounded-2xl bg-[#fff3ec] p-5 flex items-center justify-between text-left hover:translate-y-0.5 transition-transform"
+            >
+              <span className="flex items-center gap-3"><span className="text-3xl">{christmas.emoji}</span><span><b className="block text-text-cute">{christmas.name}</b><small className="text-text-soft">Tema exclusivo de la zona secreta</small></span></span>
+              {isActive && <span className="text-deep-pink font-bold text-xl">✓</span>}
+            </button>
+          );
+        })()}
       </div>
 
       <div className="glass-card p-6 text-center animate-slide-up" style={{ animationDelay: '0.2s' }}>

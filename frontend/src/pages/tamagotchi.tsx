@@ -1,8 +1,9 @@
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import { DIALOGUES } from '@/utils/gameData';
+import ThemeSelector from '@/components/ThemeSelector';
 
-export default function Tamagotchi({ gameState, addNotification, registerClick, inputKonamiKey }: any) {
+export default function Tamagotchi({ gameState, addNotification, registerClick, inputKonamiKey, activeTheme, setActiveThemeId, isThemeUnlocked }: any) {
   const { stats, mood, doAction, actionCooldown, loading } = gameState;
   const [dialogue, setDialogue] = useState({ text: '... 🌸', emoji: '✨' });
   const imageMood = ['happy', 'hungry', 'play', 'love', 'sleep', 'cry', 'wave', 'idle'].includes(mood)
@@ -64,6 +65,13 @@ export default function Tamagotchi({ gameState, addNotification, registerClick, 
           <span className="sticker-card rounded-full bg-[#fff3ec] px-3 py-2">🍓 energía {stats.hunger}%</span>
           <span className="sticker-card rounded-full bg-[#eef8ff] px-3 py-2">☾ sueño {stats.sleep}%</span>
         </div>
+
+        <ThemeSelector
+          activeThemeId={activeTheme.id}
+          onSelectTheme={setActiveThemeId}
+          isThemeUnlocked={isThemeUnlocked}
+          className="w-full mb-6"
+        />
 
         {/* Barras de Estado */}
         <div className="w-full space-y-4 mb-8 bg-white/30 p-4 rounded-2xl">

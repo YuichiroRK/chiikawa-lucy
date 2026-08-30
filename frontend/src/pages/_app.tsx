@@ -20,6 +20,10 @@ export default function App({ Component, pageProps }: AppProps) {
     hasFoundEasterEgg: gameState.foundEasterEggCount > 0,
     hasSecretZone: gameState.isAchievementUnlocked('ach-secret-zone')
   });
+  const handleThemeChange = (themeId: string) => {
+    setActiveThemeId(themeId);
+    void gameState.doSetTheme(themeId);
+  };
 
   return (
     <Layout 
@@ -32,7 +36,7 @@ export default function App({ Component, pageProps }: AppProps) {
         gameState={gameState}
         addNotification={addNotification}
         activeTheme={activeTheme}
-        setActiveThemeId={setActiveThemeId}
+        setActiveThemeId={handleThemeChange}
         isThemeUnlocked={isThemeUnlocked}
         registerClick={registerClick}
         inputKonamiKey={inputKonamiKey}
