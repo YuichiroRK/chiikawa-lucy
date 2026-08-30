@@ -11,6 +11,7 @@ interface EasterEggState {
   registerClick: (elementId: string) => void;
   konamiActivated: boolean;
   secretWordActivated: boolean;
+  inputKonamiKey: (key: string) => void;
 }
 
 const KONAMI_CODE = [
@@ -45,6 +46,23 @@ export function useEasterEggs(
     [onEasterEggFound]
   );
 
+  const inputKonamiKey = useCallback(
+    (key: string) => {
+      konamiProgress.current.push(key);
+      if (konamiProgress.current.length > KONAMI_CODE.length) {
+        konamiProgress.current = konamiProgress.current.slice(-KONAMI_CODE.length);
+      }
+      if (konamiProgress.current.length === KONAMI_CODE.length &&
+        konamiProgress.current.every((value, index) => value === KONAMI_CODE[index]) &&
+        !konamiActivated) {
+        setKonamiActivated(true);
+        markFound('ee-konami');
+        konamiProgress.current = [];
+      }
+    },
+    [konamiActivated, markFound]
+  );
+
   const checkEasterEgg = useCallback(
     (id: string) => {
       markFound(id);
@@ -55,29 +73,12 @@ export function useEasterEggs(
   // ── Konami Code Listener ──
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      konamiProgress.current.push(e.code);
-
-      // Keep only the last N keys
-      if (konamiProgress.current.length > KONAMI_CODE.length) {
-        konamiProgress.current = konamiProgress.current.slice(-KONAMI_CODE.length);
-      }
-
-      // Check match
-      if (konamiProgress.current.length === KONAMI_CODE.length) {
-        const matches = konamiProgress.current.every(
-          (key, i) => key === KONAMI_CODE[i]
-        );
-        if (matches && !konamiActivated) {
-          setKonamiActivated(true);
-          markFound('ee-konami');
-          konamiProgress.current = [];
-        }
-      }
+      inputKonamiKey(e.code);
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [konamiActivated, markFound]);
+  }, [inputKonamiKey]);
 
   // ── Secret Word Detector ──
   useEffect(() => {
@@ -153,5 +154,6 @@ export function useEasterEggs(
     registerClick,
     konamiActivated,
     secretWordActivated,
+    inputKonamiKey,
   };
 }

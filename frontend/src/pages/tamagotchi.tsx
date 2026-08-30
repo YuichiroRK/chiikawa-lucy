@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import { DIALOGUES } from '@/utils/gameData';
 
-export default function Tamagotchi({ gameState, addNotification, registerClick }: any) {
+export default function Tamagotchi({ gameState, addNotification, registerClick, inputKonamiKey }: any) {
   const { stats, mood, doAction, actionCooldown, loading } = gameState;
   const [dialogue, setDialogue] = useState({ text: '... 🌸', emoji: '✨' });
   const imageMood = ['happy', 'hungry', 'play', 'love', 'sleep', 'cry', 'wave', 'idle'].includes(mood)
@@ -72,6 +72,29 @@ export default function Tamagotchi({ gameState, addNotification, registerClick }
           <ActionButton text="Jugar" icon="🎮" onClick={() => handleAction('play')} disabled={actionCooldown} />
           <ActionButton text="Dormir" icon="💤" onClick={() => handleAction('sleep')} disabled={actionCooldown} />
         </div>
+
+        <details className="mt-5 w-full text-center">
+          <summary className="cursor-pointer text-xs font-semibold text-text-soft hover:text-deep-pink">
+            ¿Tienes un código secreto? ✨
+          </summary>
+          <div className="mt-3 grid grid-cols-4 gap-2 max-w-xs mx-auto">
+            {[
+              ['↑', 'ArrowUp'], ['↓', 'ArrowDown'], ['←', 'ArrowLeft'], ['→', 'ArrowRight'],
+              ['B', 'KeyB'], ['A', 'KeyA'],
+            ].map(([label, key]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => inputKonamiKey?.(key)}
+                className="rounded-xl bg-white/70 border border-pastel-pink py-2 font-bold text-text-cute active:scale-95"
+                aria-label={`Código ${label}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <p className="mt-2 text-[10px] text-text-soft">↑ ↑ ↓ ↓ ← → ← → B A</p>
+        </details>
       </div>
     </div>
   );

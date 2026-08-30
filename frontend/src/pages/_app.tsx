@@ -8,7 +8,7 @@ import { useEasterEggs } from "@/hooks/useEasterEggs";
 
 export default function App({ Component, pageProps }: AppProps) {
   const gameState = useGameState();
-  const { registerClick } = useEasterEggs((easterEggId) => {
+  const { registerClick, inputKonamiKey } = useEasterEggs((easterEggId) => {
     void gameState.doFindEasterEgg(easterEggId);
     if (easterEggId === 'ee-konami') void gameState.doUnlockAchievement('ach-konami');
     if (easterEggId === 'ee-witching-hour') void gameState.doUnlockAchievement('ach-night-owl');
@@ -35,6 +35,7 @@ export default function App({ Component, pageProps }: AppProps) {
         setActiveThemeId={setActiveThemeId}
         isThemeUnlocked={isThemeUnlocked}
         registerClick={registerClick}
+        inputKonamiKey={inputKonamiKey}
       />
     </Layout>
   );
