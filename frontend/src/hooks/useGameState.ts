@@ -11,6 +11,7 @@ import {
   viewSong,
   unlockAchievement,
   findEasterEgg,
+  unlockSecret,
   setTheme as setThemeApi,
   getStreak,
   type StatusResponse,
@@ -75,6 +76,7 @@ export function useGameState(): GameState & GameActions {
   const [lastAction, setLastAction] = useState<string | null>(null);
   const [actionCooldown, setActionCooldown] = useState(false);
   const cooldownTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const secretUnlocking = useRef(false);
 
   // ── Initial fetch ──
   const refreshState = useCallback(async () => {
@@ -365,6 +367,17 @@ export function useGameState(): GameState & GameActions {
     isAchievementUnlocked,
     doUnlockAchievement
   ]);
+
+  useEffect(() => {
+    if (secretUnlocking.current || progress.achievements.length < 5 || progress.easterEggs.length < 3 ||
+      streak.currentStreak < 7 || progress.letters.length < 3) return;
+
+    secretUnlocking.current = true;
+    unlockSecret()
+      .then(() => doUnlockAchievement('ach-secret-zone'))
+      .catch((err) => console.error('Secret zone unlock error:', err))
+      .finally(() => { secretUnlocking.current = false; });
+  }, [progress.achievements.length, progress.easterEggs.length, progress.letters.length, streak.currentStreak, doUnlockAchievement]);
 
   return {
     stats,

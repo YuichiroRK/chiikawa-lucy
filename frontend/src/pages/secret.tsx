@@ -20,7 +20,7 @@ export default function Secret({ gameState, activeTheme, setActiveThemeId, isThe
               <span className="mr-2">{gameState.foundEasterEggCount >= 3 ? '✅' : '❌'}</span> 3+ Secretos (Easter eggs)
             </li>
             <li className="flex items-center">
-              <span className="mr-2">{gameState.streak.longestStreak >= 7 ? '✅' : '❌'}</span> 7 Días de racha
+              <span className="mr-2">{gameState.streak.currentStreak >= 7 ? '✅' : '❌'}</span> 7 Días de racha
             </li>
             <li className="flex items-center">
               <span className="mr-2">{gameState.unlockedLetterCount >= 3 ? '✅' : '❌'}</span> 3 Cartitas leídas

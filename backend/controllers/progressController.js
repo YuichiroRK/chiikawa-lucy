@@ -311,8 +311,8 @@ exports.unlockSecret = async (req, res) => {
         await run(
             `UPDATE user_profile SET secret_zone_unlocked = 1,
                 unlocked_letters = ?, unlocked_achievements = ? WHERE id = 1`,
-            [JSON.stringify([...letters, 'letter-secret']),
-                JSON.stringify([...achievements, 'ach-secret-zone'])]
+            [JSON.stringify([...new Set([...letters, 'letter-secret'])]),
+                JSON.stringify([...new Set([...achievements, 'ach-secret-zone'])])]
         );
 
         res.json({
