@@ -23,11 +23,14 @@ export default function Gallery() {
       </Head>
 
       <div className="flex items-center justify-center mb-4 text-4xl animate-float">📸</div>
-      <h1 className="text-3xl font-bold text-gradient-pink mb-2 text-center animate-slide-up">Galería Kawaii</h1>
-      <p className="text-text-soft mb-8 text-center animate-slide-up">Recuerdos y stickers para ti 🌸</p>
+      <div className="text-center mb-8">
+        <div className="washi-tape h-8 w-40 mx-auto mb-2 opacity-70" />
+        <h1 className="text-4xl font-bold text-gradient-pink mb-2 animate-slide-up">Galería Kawaii</h1>
+        <p className="note-text text-xl text-text-soft animate-slide-up">Recuerdos y stickers para ti 🌸</p>
+      </div>
 
       <h2 className="text-xl font-bold text-text-cute mb-4 border-b-2 border-pastel-pink pb-2 inline-block">Stickers</h2>
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 mb-10">
+      <div className="paper-surface sticker-card rounded-3xl p-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 mb-10">
         {STICKERS.map((sticker) => (
           <div 
             key={sticker.id}
@@ -44,7 +47,7 @@ export default function Gallery() {
       </div>
 
       <h2 className="text-xl font-bold text-text-cute mb-4 border-b-2 border-pastel-pink pb-2 inline-block">Fotos de Chiikawa</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div className="paper-surface sticker-card rounded-3xl p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {images.map((img, i) => (
           <div 
             key={i}

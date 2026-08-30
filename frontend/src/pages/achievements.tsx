@@ -31,7 +31,7 @@ export default function Achievements({ gameState }: any) {
         </p>
       </div>
 
-      <div className="space-y-8">
+      <div className="paper-surface sticker-card rounded-3xl p-4 sm:p-6 space-y-8">
         {categories.map((cat, catIndex) => {
           const catAchievements = ACHIEVEMENTS.filter(a => a.category === cat);
           if (catAchievements.length === 0) return null;

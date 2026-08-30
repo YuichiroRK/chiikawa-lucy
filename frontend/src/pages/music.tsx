@@ -21,16 +21,19 @@ export default function Music({ gameState, addNotification }: any) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col p-6 max-w-2xl mx-auto pb-24">
+    <div className="min-h-screen flex flex-col p-6 max-w-3xl mx-auto pb-24">
       <Head>
         <title>Música 🎵</title>
       </Head>
 
       <div className="flex items-center justify-center mb-4 text-4xl animate-bounce-soft">🎧</div>
-      <h1 className="text-3xl font-bold text-gradient-pink mb-2 text-center animate-slide-up">Playlist para Lucy</h1>
-      <p className="text-text-soft mb-8 text-center animate-slide-up">Música tierna para acompañarte mientras estudias 🌸</p>
+      <div className="text-center mb-8">
+        <div className="washi-tape h-8 w-40 mx-auto mb-2 opacity-70" />
+        <h1 className="text-4xl font-bold text-gradient-pink mb-2 animate-slide-up">Playlist para Lucy</h1>
+        <p className="note-text text-xl text-text-soft animate-slide-up">Música tierna para acompañarte mientras estudias 🌸</p>
+      </div>
 
-      <div className="space-y-4">
+      <div className="paper-surface sticker-card rounded-3xl p-4 sm:p-6 space-y-4">
         {SONGS.map((song, index) => {
           const viewed = isSongViewed(song.id);
           const isPlaying = playingId === song.id;

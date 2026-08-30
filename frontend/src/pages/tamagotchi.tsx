@@ -37,7 +37,8 @@ export default function Tamagotchi({ gameState, addNotification, registerClick, 
         <title>Chiikawa 🐾</title>
       </Head>
 
-      <div className="glass-card paper-surface max-w-sm w-full p-6 flex flex-col items-center animate-slide-up relative">
+      <div className="glass-card paper-surface max-w-lg w-full p-5 sm:p-7 flex flex-col items-center animate-slide-up relative">
+        <div className="washi-tape absolute -top-3 left-1/2 h-7 w-44 -translate-x-1/2 opacity-80" />
         
         {/* Diálogo */}
         <div className="bg-white px-4 py-3 rounded-2xl mb-6 border-2 border-pastelPink shadow-sm text-center w-full animate-bounce-soft relative">
@@ -46,7 +47,7 @@ export default function Tamagotchi({ gameState, addNotification, registerClick, 
         </div>
 
         {/* Personaje */}
-        <div className="w-56 h-56 bg-white/40 rounded-full flex items-center justify-center mb-8 shadow-inner relative overflow-hidden transition-all duration-300">
+        <div className="w-64 h-64 sm:w-72 sm:h-72 bg-white/60 rounded-full flex items-center justify-center mb-6 shadow-inner relative overflow-hidden transition-all duration-300 border-4 border-white">
           <img
              onClick={() => registerClick?.('chiikawa')}
              src={`/images/chiikawa-${imageMood}.png`}
@@ -56,6 +57,12 @@ export default function Tamagotchi({ gameState, addNotification, registerClick, 
                event.currentTarget.src = '/images/chiikawa-idle.png';
              }}
           />
+        </div>
+
+        <div className="flex w-full justify-between gap-2 mb-4 text-xs font-bold text-text-soft">
+          <span className="sticker-card rounded-full bg-[#fdf2f8] px-3 py-2">♡ cariño {stats.happiness}%</span>
+          <span className="sticker-card rounded-full bg-[#fff3ec] px-3 py-2">🍓 energía {stats.hunger}%</span>
+          <span className="sticker-card rounded-full bg-[#eef8ff] px-3 py-2">☾ sueño {stats.sleep}%</span>
         </div>
 
         {/* Barras de Estado */}

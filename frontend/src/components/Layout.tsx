@@ -40,6 +40,18 @@ export default function Layout({
       {/* Animated background */}
       <div className="fixed inset-0 bg-kawaii-gradient -z-10" />
 
+      <header className="relative z-30 mx-auto flex w-full max-w-[1200px] items-center justify-between border-b-4 border-white bg-white/75 px-5 py-3 shadow-[0_4px_0_rgba(236,64,122,0.1)] backdrop-blur-sm">
+        <div className="flex items-center gap-3">
+          <span className="sticker-card flex h-10 w-10 rotate-[-6deg] items-center justify-center rounded-xl bg-white text-xl">🌸</span>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-soft">Diario de</p>
+            <p className="text-lg font-bold leading-none text-deep-pink">Chiikawa</p>
+          </div>
+        </div>
+        <p className="note-text hidden text-xl text-text-soft sm:block">Un rinconcito para Lucy ✨</p>
+        <span className="sticker-card rounded-full bg-[#fff3ec] px-3 py-1 text-xs font-bold text-[#904d00]">♡ cuidando juntos</span>
+      </header>
+
       {/* Particles */}
       <ParticleBackground particles={particles} count={12} />
 

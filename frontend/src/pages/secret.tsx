@@ -32,16 +32,17 @@ export default function Secret({ gameState, activeTheme, setActiveThemeId, isThe
   }
 
   return (
-    <div className="min-h-screen flex flex-col p-6 max-w-2xl mx-auto pb-24">
+    <div className="paper-surface min-h-screen flex flex-col p-6 max-w-3xl mx-auto pb-24">
       <Head>
         <title>Zona Secreta ✨</title>
       </Head>
 
       <div className="flex items-center justify-center mb-4 text-4xl animate-pulse-glow w-16 h-16 rounded-full mx-auto bg-white/50">✨</div>
-      <h1 className="text-3xl font-bold text-gradient-gold mb-2 text-center animate-slide-up">Rincón Mágico</h1>
-      <p className="text-text-soft mb-8 text-center animate-slide-up">¡Lo lograste Lucy! Este es tu espacio especial 💖</p>
+      <div className="washi-tape h-8 w-44 mx-auto mb-2 opacity-70" />
+      <h1 className="text-4xl font-bold text-gradient-gold mb-2 text-center animate-slide-up">Rincón Mágico</h1>
+      <p className="note-text text-xl text-text-soft mb-8 text-center animate-slide-up">¡Lo lograste Lucy! Este es tu espacio especial 💖</p>
 
-      <div className="glass-card-solid p-6 mb-8 animate-slide-up">
+      <div className="sticker-card paper-surface p-6 mb-8 animate-slide-up rounded-3xl">
         <h2 className="text-xl font-bold text-text-cute mb-4 flex items-center">
           <span className="mr-2">🎨</span> Personaliza tu mundo
         </h2>
