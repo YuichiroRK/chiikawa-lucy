@@ -14,6 +14,7 @@ El foco del proyecto está en demostrar criterio de producto además de implemen
 - **Arquitectura desplegable:** servicios aislados con Docker Compose y Nginx como reverse proxy.
 - **Responsive by design:** navegación inferior en móvil, navegación lateral en desktop y targets táctiles accesibles.
 - **Estado y reglas de negocio:** acciones del usuario, progreso, temas, logros y secretos se validan y persisten desde el backend.
+- **Operación segura:** validación de IDs, límite de payload, rate limit básico, readiness check y backups automáticos.
 
 ## Stack
 
@@ -55,10 +56,11 @@ El proxy centraliza el acceso público, mientras que frontend y backend se ejecu
 ### Progreso y contenido
 
 - Cartas desbloqueables mediante visitas, rachas y logros.
-- 13 logros agrupados por cuidado, exploración, dedicación y secretos.
+- 19 logros agrupados por cuidado, exploración, dedicación y secretos.
 - Galería de sprites, fondos y stickers.
 - Playlist integrada con enlaces a Spotify y mensajes personalizados.
-- Temas estacionales: default, Sakura, invierno, Halloween y Navidad.
+- Temas estacionales: Rosa Pastel, Sakura, Invierno, Halloween, Verano Soleado y Navidad.
+- Emojis de acciones adaptados a cada tema.
 
 ### Exploración
 
@@ -67,6 +69,8 @@ El proxy centraliza el acceso público, mientras que frontend y backend se ejecu
 - Recompensa por repetir mimos rápidamente.
 - Zona secreta con requisitos acumulativos de progreso.
 
+El backend registra visitas, acciones, cartas, canciones, logros y easter eggs en la tabla `progress_events`.
+
 ## API
 
 ### Health check
@@ -74,6 +78,14 @@ El proxy centraliza el acceso público, mientras que frontend y backend se ejecu
 ```http
 GET /health
 ```
+
+### Readiness
+
+```http
+GET /ready
+```
+
+Comprueba que el backend puede consultar SQLite y devuelve `503` si no está listo.
 
 ### Tamagotchi
 
@@ -136,6 +148,10 @@ npm run dev
 
 El frontend usa `/api` como base pública cuando se ejecuta detrás de Nginx. Para desarrollo directo, configura `NEXT_PUBLIC_API_URL` según la URL del backend.
 
+### Persistencia y backups
+
+La base vive en `backend/database/sqlite.db` y se monta como volumen bind de Docker. No se debe borrar para desplegar cambios. El script `ops/backup-db.sh` crea snapshots consistentes mediante `VACUUM INTO` y elimina backups con más de 30 días. En el servidor se ejecuta diariamente por cron.
+
 ## Estructura
 
 ```text
@@ -154,6 +170,7 @@ El frontend usa `/api` como base pública cuando se ejecuta detrás de Nginx. Pa
 │       ├── styles/        # Tokens y estilos globales
 │       └── utils/         # Cliente API y datos del juego
 ├── nginx/                  # Reverse proxy y configuración de producción
+├── ops/                    # Operación y backups de SQLite
 ├── docker-compose.yml
 └── README.md
 ```
@@ -165,6 +182,7 @@ El frontend usa `/api` como base pública cuando se ejecuta detrás de Nginx. Pa
 - **SQLite:** solución ligera y suficiente para un producto personal, con persistencia local y cero infraestructura externa.
 - **Docker Compose:** permite reproducir el entorno completo con un único comando.
 - **Nginx:** separa el tráfico público del frontend y la API, y deja preparada la aplicación para un despliegue detrás de Cloudflare Tunnel.
+- **SQLite WAL + eventos:** mejora la resistencia a lecturas/escrituras concurrentes y permite auditar la progresión.
 
 ## Personalización
 
@@ -177,6 +195,13 @@ Para exponer la aplicación de forma segura:
 1. Ejecutar `docker compose up -d` en el servidor.
 2. Configurar Cloudflare Tunnel apuntando a `http://localhost:80`.
 3. Mantener el backend sin exposición pública directa y dejar que Nginx gestione el tráfico.
+
+En el servidor de producción, el checkout se actualiza automáticamente cada 5 minutos con `git pull --ff-only`. Si detecta cambios, reconstruye los servicios Docker sin ejecutar `docker compose down`. Los backups de SQLite se ejecutan diariamente a las `03:15`.
+
+Variables opcionales del backend:
+
+- `PORT`: puerto interno del backend, por defecto `5000`.
+- `FRONTEND_ORIGIN`: origen permitido para CORS; si no se define, la API no añade CORS cross-origin porque normalmente se consume detrás de Nginx.
 
 ## Autor
 
