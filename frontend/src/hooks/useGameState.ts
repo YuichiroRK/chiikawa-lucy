@@ -60,6 +60,7 @@ const DEFAULT_PROGRESS: ProgressState = {
   visitCount: 1,
   firstVisit: new Date().toISOString(),
   lastVisit: new Date().toISOString(),
+  totalHearts: 0,
 };
 
 // ─── Hook ───
