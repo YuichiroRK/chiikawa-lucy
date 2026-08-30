@@ -1,4 +1,16 @@
-const { query, run } = require('../database/db');
+const { query, run, recordEvent } = require('../database/db');
+
+const KNOWN_IDS = {
+    letters: new Set(['letter-1', 'letter-2', 'letter-3', 'letter-4', 'letter-5', 'letter-6', 'letter-secret']),
+    songs: new Set(Array.from({ length: 8 }, (_, index) => `song-${index + 1}`)),
+    achievements: new Set([
+        'ach-first-visit', 'ach-first-feed', 'ach-first-play', 'ach-first-sleep', 'ach-first-pet',
+        'ach-max-happiness', 'ach-all-actions', 'ach-streak-3', 'ach-streak-7', 'ach-read-letter',
+        'ach-all-songs', 'ach-easter-egg', 'ach-konami', 'ach-night-owl', 'ach-secret-zone',
+        'ach-theme-change', 'ach-hearts-10', 'ach-hearts-50', 'ach-hearts-100', 'ach-perfect-care',
+    ]),
+    easterEggs: new Set(['ee-konami', 'ee-secret-word', 'ee-click-10', 'ee-witching-hour', 'ee-valentines']),
+};
 
 // ── Helpers ──────────────────────────────────────────────────
 
@@ -19,6 +31,10 @@ function validateId(value, field) {
         return { success: false, message: `${field} must contain only letters, numbers and hyphens` };
     }
     return null;
+}
+
+function validateKnownId(value, field, type) {
+    return KNOWN_IDS[type].has(value) ? null : { success: false, message: `Unknown ${field}` };
 }
 
 /**
@@ -53,9 +69,12 @@ exports.unlockLetter = async (req, res) => {
     }
     const invalid = validateId(letterId, 'letterId');
     if (invalid) return res.status(400).json(invalid);
+    const unknown = validateKnownId(letterId, 'letterId', 'letters');
+    if (unknown) return res.status(400).json(unknown);
 
     try {
         const { updated, list } = await addToJsonArrayColumn('unlocked_letters', letterId);
+        if (updated) await recordEvent('letter_unlocked', letterId);
 
         res.json({
             success: true,
@@ -78,9 +97,12 @@ exports.viewSong = async (req, res) => {
     }
     const invalid = validateId(songId, 'songId');
     if (invalid) return res.status(400).json(invalid);
+    const unknown = validateKnownId(songId, 'songId', 'songs');
+    if (unknown) return res.status(400).json(unknown);
 
     try {
         const { updated, list } = await addToJsonArrayColumn('viewed_songs', songId);
+        if (updated) await recordEvent('song_viewed', songId);
         let unlockedAchievements;
         let unlockedLetters;
 
@@ -121,9 +143,12 @@ exports.unlockAchievement = async (req, res) => {
     }
     const invalid = validateId(achievementId, 'achievementId');
     if (invalid) return res.status(400).json(invalid);
+    const unknown = validateKnownId(achievementId, 'achievementId', 'achievements');
+    if (unknown) return res.status(400).json(unknown);
 
     try {
         const { updated, list } = await addToJsonArrayColumn('unlocked_achievements', achievementId);
+        if (updated) await recordEvent('achievement_unlocked', achievementId);
         let unlockedLetters;
 
         if (list.length >= 10) {
@@ -158,9 +183,12 @@ exports.findEasterEgg = async (req, res) => {
     }
     const invalid = validateId(easterEggId, 'easterEggId');
     if (invalid) return res.status(400).json(invalid);
+    const unknown = validateKnownId(easterEggId, 'easterEggId', 'easterEggs');
+    if (unknown) return res.status(400).json(unknown);
 
     try {
         const { updated, list } = await addToJsonArrayColumn('found_easter_eggs', easterEggId);
+        if (updated) await recordEvent('easter_egg_found', easterEggId);
 
         res.json({
             success: true,
@@ -209,7 +237,7 @@ exports.setTheme = async (req, res) => {
 exports.getStreak = async (req, res) => {
     try {
         const state = await query(
-            `SELECT consecutive_days, last_visit_date, total_hearts FROM user_profile WHERE id = 1`
+            `SELECT consecutive_days, longest_streak, last_visit_date, total_hearts FROM user_profile WHERE id = 1`
         );
 
         if (!state) {
@@ -220,7 +248,7 @@ exports.getStreak = async (req, res) => {
             success: true,
             data: {
                 currentStreak: state.consecutive_days || 0,
-                longestStreak: state.consecutive_days || 0,
+                longestStreak: state.longest_streak || state.consecutive_days || 0,
                 consecutiveDays: state.consecutive_days || 0,
                 totalHearts: state.total_hearts || 0,
                 lastVisit: state.last_visit_date || null,

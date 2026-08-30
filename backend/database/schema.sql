@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS user_profile (
     secret_zone_unlocked INTEGER DEFAULT 0,
     -- Streak and engagement tracking
     consecutive_days INTEGER DEFAULT 0,
+    longest_streak INTEGER DEFAULT 0,
     last_visit_date TEXT,
     total_hearts INTEGER DEFAULT 0,
     active_theme TEXT DEFAULT 'default',
@@ -30,3 +31,11 @@ CREATE TABLE IF NOT EXISTS user_profile (
 INSERT INTO user_profile (id, username, last_connection, last_visit_date)
 SELECT 1, 'Lucy', datetime('now'), date('now')
 WHERE NOT EXISTS (SELECT 1 FROM user_profile WHERE id = 1);
+
+CREATE TABLE IF NOT EXISTS progress_events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_type TEXT NOT NULL,
+    item_id TEXT,
+    metadata TEXT DEFAULT '{}',
+    created_at TEXT DEFAULT (datetime('now'))
+);

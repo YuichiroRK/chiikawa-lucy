@@ -73,6 +73,7 @@ function initDatabase() {
 function runMigrations() {
     const newColumns = [
         { name: 'consecutive_days', definition: 'INTEGER DEFAULT 0' },
+        { name: 'longest_streak',   definition: 'INTEGER DEFAULT 0' },
         { name: 'last_visit_date',  definition: 'TEXT' },
         { name: 'total_hearts',     definition: 'INTEGER DEFAULT 0' },
         { name: 'active_theme',     definition: "TEXT DEFAULT 'default'" },
@@ -98,4 +99,11 @@ function runMigrations() {
     });
 }
 
-module.exports = { db, query, run, runAll };
+function recordEvent(eventType, itemId = null, metadata = {}) {
+    return run(
+        `INSERT INTO progress_events (event_type, item_id, metadata) VALUES (?, ?, ?)`,
+        [eventType, itemId, JSON.stringify(metadata)]
+    );
+}
+
+module.exports = { db, query, run, runAll, recordEvent };
