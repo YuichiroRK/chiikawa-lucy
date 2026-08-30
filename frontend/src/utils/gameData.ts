@@ -468,7 +468,7 @@ export const THEMES: Theme[] = [
       accent: '#f59e0b',
       background: '#fffbea',
     },
-    backgroundImage: '/backgrounds/bg-default.png',
+    backgroundImage: '',
     particles: ['☀️', '🏖️', '🌊', '🍉', '🕶️', '✨'],
     unlockCondition: 'achievements_5',
   },
