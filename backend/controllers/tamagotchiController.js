@@ -40,6 +40,22 @@ const ACHIEVEMENT_CHECKS = [
     },
 ];
 
+const ACHIEVEMENT_ID_ALIASES = {
+    first_feed: 'ach-first-feed',
+    first_play: 'ach-first-play',
+    first_pet: 'ach-first-pet',
+    first_sleep: 'ach-first-sleep',
+    full_happiness: 'ach-max-happiness',
+    streak_3: 'ach-streak-3',
+    streak_7: 'ach-streak-7',
+};
+const KNOWN_ACHIEVEMENT_IDS = new Set([
+    ...ACHIEVEMENT_CHECKS.map(({ id }) => id),
+    'ach-first-visit', 'ach-all-actions', 'ach-read-letter',
+    'ach-all-songs', 'ach-easter-egg', 'ach-night-owl',
+    'ach-theme-change', 'ach-konami', 'ach-secret-zone',
+]);
+
 function parseJsonArray(value) {
     try {
         const parsed = JSON.parse(value || '[]');
@@ -47,6 +63,12 @@ function parseJsonArray(value) {
     } catch {
         return [];
     }
+}
+
+function normalizeAchievementIds(value) {
+    return [...new Set(parseJsonArray(value)
+        .map((id) => ACHIEVEMENT_ID_ALIASES[id] || id)
+        .filter((id) => KNOWN_ACHIEVEMENT_IDS.has(id)))];
 }
 
 function progressResponse(state) {
@@ -139,8 +161,13 @@ exports.getStatus = async (req, res) => {
         state.last_visit_date = today;
 
         // 3. Unlock visit/streak achievements and eligible letters before persisting.
-        let achievements = parseJsonArray(state.unlocked_achievements);
-        const achievementContext = { consecutiveDays: streak };
+        let achievements = normalizeAchievementIds(state.unlocked_achievements);
+        const achievementContext = {
+            consecutiveDays: streak,
+            happiness: state.happiness,
+            hunger: state.hunger,
+            sleep: state.sleep,
+        };
         for (const achievement of ACHIEVEMENT_CHECKS) {
             if (!achievements.includes(achievement.id) && achievement.condition(achievementContext)) {
                 achievements.push(achievement.id);
@@ -207,7 +234,7 @@ exports.performAction = async (req, res) => {
         );
 
         let { happiness, hunger, sleep, unlocked_achievements, unlocked_letters, total_hearts, consecutive_days } = state;
-        unlocked_achievements = JSON.parse(unlocked_achievements || '[]');
+        unlocked_achievements = normalizeAchievementIds(unlocked_achievements);
         unlocked_letters = parseJsonArray(unlocked_letters);
         total_hearts = total_hearts || 0;
         consecutive_days = consecutive_days || 0;
