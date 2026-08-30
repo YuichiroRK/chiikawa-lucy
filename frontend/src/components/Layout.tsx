@@ -17,6 +17,7 @@ interface LayoutProps {
   onDismissNotification?: (id: string) => void;
   showNav?: boolean;
   title?: string;
+  backgroundImage?: string;
 }
 
 export default function Layout({
@@ -26,6 +27,7 @@ export default function Layout({
   onDismissNotification,
   showNav = true,
   title = 'Para ti 🌸 | Chiikawa Tamagotchi',
+  backgroundImage,
 }: LayoutProps) {
   return (
     <>
@@ -38,7 +40,10 @@ export default function Layout({
       </Head>
 
       {/* Animated background */}
-      <div className="fixed inset-0 bg-kawaii-gradient -z-10" />
+      <div
+        className="fixed inset-0 bg-kawaii-gradient -z-10"
+        style={backgroundImage ? { backgroundImage: `linear-gradient(rgba(255,255,255,.32), rgba(255,255,255,.32)), url(${backgroundImage})` } : undefined}
+      />
 
       <header className="relative z-30 mx-auto flex w-full max-w-[1200px] items-center justify-between border-b-4 border-white bg-white/75 px-5 py-3 shadow-[0_4px_0_rgba(236,64,122,0.1)] backdrop-blur-sm">
         <div className="flex items-center gap-3">

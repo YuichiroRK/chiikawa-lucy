@@ -169,7 +169,7 @@ exports.setTheme = async (req, res) => {
         return res.status(400).json({ success: false, message: 'theme is required' });
     }
 
-    const allowedThemes = ['theme-default', 'theme-sakura', 'theme-winter', 'theme-halloween', 'theme-christmas'];
+    const allowedThemes = ['theme-default', 'theme-sakura', 'theme-winter', 'theme-halloween', 'theme-summer', 'theme-christmas'];
 
     if (!allowedThemes.includes(theme)) {
         return res.status(400).json({

@@ -39,12 +39,16 @@ export function useTheme(
     root.style.setProperty('--theme-secondary', activeTheme.colors.secondary);
     root.style.setProperty('--theme-accent', activeTheme.colors.accent);
     root.style.setProperty('--theme-background', activeTheme.colors.background);
+    root.style.setProperty('--theme-surface', activeTheme.colors.secondary);
+    root.style.setProperty('--theme-paper-line', `${activeTheme.colors.primary}35`);
 
     return () => {
       root.style.removeProperty('--theme-primary');
       root.style.removeProperty('--theme-secondary');
       root.style.removeProperty('--theme-accent');
       root.style.removeProperty('--theme-background');
+      root.style.removeProperty('--theme-surface');
+      root.style.removeProperty('--theme-paper-line');
     };
   }, [activeTheme]);
 
@@ -62,6 +66,8 @@ export function useTheme(
           return unlockedConditions.achievementCount >= 3;
         case 'easter_egg_found':
           return unlockedConditions.hasFoundEasterEgg;
+        case 'achievements_5':
+          return unlockedConditions.achievementCount >= 5;
         case 'secret_zone':
           return unlockedConditions.hasSecretZone;
         default:

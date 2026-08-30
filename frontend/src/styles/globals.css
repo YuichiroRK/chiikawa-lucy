@@ -27,6 +27,12 @@
   --color-glass-white: rgba(255, 255, 255, 0.65);
   --color-glass-pink: rgba(255, 209, 220, 0.35);
   --color-overlay-dark: rgba(92, 74, 77, 0.5);
+  --theme-primary: #ffb7c5;
+  --theme-secondary: #ffd1dc;
+  --theme-accent: #ff8fa3;
+  --theme-background: #fff5f7;
+  --theme-surface: #ffd1dc;
+  --theme-paper-line: rgba(255, 183, 197, 0.2);
 
   /* ─── Font Families ─── */
   --font-heading: 'Quicksand', sans-serif;
@@ -191,8 +197,8 @@ html {
 
 body {
   font-family: var(--font-body);
-  background-color: #fff8f2;
-  background-image: radial-gradient(rgba(244, 143, 177, 0.28) 1px, transparent 1px);
+  background-color: var(--theme-background);
+  background-image: radial-gradient(var(--theme-primary) 1px, transparent 1px);
   background-size: 20px 20px;
   color: var(--color-text-cute);
   min-height: 100vh;
@@ -211,32 +217,32 @@ h1, h2, h3, h4, h5, h6 {
    ═══════════════════════════════════════════════ */
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.86);
+  background: color-mix(in srgb, var(--theme-surface) 38%, white);
   border: 3px solid #fff;
-  outline: 1px solid rgba(244, 143, 177, 0.7);
+  outline: 1px solid color-mix(in srgb, var(--theme-primary) 75%, white);
   border-radius: 1.5rem;
-  box-shadow: 4px 4px 0 rgba(236, 64, 122, 0.12);
+  box-shadow: 4px 4px 0 color-mix(in srgb, var(--theme-accent) 22%, transparent);
   transition: all 0.3s ease;
 }
 
 .glass-card:hover {
-  background: #fff;
-  box-shadow: 2px 2px 0 rgba(236, 64, 122, 0.12);
+  background: color-mix(in srgb, var(--theme-surface) 22%, white);
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--theme-accent) 22%, transparent);
   transform: translate(2px, 2px) rotate(0.5deg);
 }
 
 .glass-card-solid {
-  background: #fff8f2;
+  background: color-mix(in srgb, var(--theme-surface) 25%, white);
   border: 3px solid #fff;
-  outline: 1px solid rgba(244, 143, 177, 0.7);
+  outline: 1px solid color-mix(in srgb, var(--theme-primary) 75%, white);
   border-radius: 1.5rem;
-  box-shadow: 6px 6px 0 rgba(236, 64, 122, 0.1);
+  box-shadow: 6px 6px 0 color-mix(in srgb, var(--theme-accent) 18%, transparent);
 }
 
 .sticker-card {
   border: 3px solid #fff;
-  outline: 1px solid rgba(244, 143, 177, 0.8);
-  box-shadow: 4px 4px 0 rgba(236, 64, 122, 0.14);
+  outline: 1px solid color-mix(in srgb, var(--theme-primary) 80%, white);
+  box-shadow: 4px 4px 0 color-mix(in srgb, var(--theme-accent) 20%, transparent);
 }
 
 .note-text {
@@ -244,14 +250,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .washi-tape {
-  background: rgba(244, 143, 177, 0.72);
+  background: color-mix(in srgb, var(--theme-primary) 72%, transparent);
   transform: rotate(-1deg);
   clip-path: polygon(1% 0, 98% 2%, 100% 95%, 2% 100%);
 }
 
 .paper-surface {
-  background-color: #fff8f2;
-  background-image: repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(244, 143, 177, 0.13) 32px);
+  background-color: color-mix(in srgb, var(--theme-background) 78%, white);
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 31px, var(--theme-paper-line) 32px);
 }
 
 .glass-nav {
@@ -267,7 +273,7 @@ h1, h2, h3, h4, h5, h6 {
    ═══════════════════════════════════════════════ */
 
 .bg-kawaii-gradient {
-  background: linear-gradient(135deg, #fff5f7 0%, #ffd1dc 30%, #ffb3ba 60%, #fff8f0 100%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-background) 88%, white) 0%, var(--theme-secondary) 45%, var(--theme-background) 100%);
   background-size: 300% 300%;
   animation: gradient-shift 8s ease infinite;
 }

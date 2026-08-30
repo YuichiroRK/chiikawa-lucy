@@ -29,7 +29,8 @@ export default function App({ Component, pageProps }: AppProps) {
     <Layout 
       notifications={notifications}
       onDismissNotification={removeNotification}
-      particles={activeTheme.particles}
+        particles={activeTheme.particles}
+        backgroundImage={activeTheme.backgroundImage}
     >
       <Component 
         {...pageProps} 
