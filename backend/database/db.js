@@ -10,6 +10,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.error('Error opening SQLite database:', err.message);
     } else {
         console.log('Connected to SQLite database.');
+        db.configure('busyTimeout', 5000);
+        db.run('PRAGMA journal_mode = WAL');
+        db.run('PRAGMA synchronous = NORMAL');
         initDatabase();
     }
 });
@@ -73,7 +76,8 @@ function runMigrations() {
         { name: 'last_visit_date',  definition: 'TEXT' },
         { name: 'total_hearts',     definition: 'INTEGER DEFAULT 0' },
         { name: 'active_theme',     definition: "TEXT DEFAULT 'default'" },
-        { name: 'created_at',       definition: "TEXT DEFAULT (datetime('now'))" },
+        // SQLite does not allow adding a column with a non-constant default.
+        { name: 'created_at',       definition: 'TEXT' },
     ];
 
     newColumns.forEach(({ name, definition }) => {
@@ -86,6 +90,9 @@ function runMigrations() {
                 }
             } else {
                 console.log(`Migration: added column "${name}".`);
+                if (name === 'created_at') {
+                    db.run(`UPDATE user_profile SET created_at = datetime('now') WHERE created_at IS NULL`);
+                }
             }
         });
     });

@@ -14,28 +14,33 @@ function parseJsonArray(value) {
     }
 }
 
+function validateId(value, field) {
+    if (typeof value !== 'string' || !/^[a-z0-9-]{1,64}$/i.test(value)) {
+        return { success: false, message: `${field} must contain only letters, numbers and hyphens` };
+    }
+    return null;
+}
+
 /**
  * Add an item to a JSON-array column if not already present.
  * Returns { updated: boolean, list: string[] }
  */
-async function addToJsonArrayColumn(column, itemId) {
-    const state = await query(`SELECT ${column} FROM user_profile WHERE id = 1`);
-    if (!state) throw new Error('User profile not found');
+let progressWriteQueue = Promise.resolve();
 
-    const list = parseJsonArray(state[column]);
+function addToJsonArrayColumn(column, itemId) {
+    const operation = progressWriteQueue.then(async () => {
+        const state = await query(`SELECT ${column} FROM user_profile WHERE id = 1`);
+        if (!state) throw new Error('User profile not found');
 
-    if (list.includes(itemId)) {
-        return { updated: false, list };
-    }
+        const list = parseJsonArray(state[column]);
+        if (list.includes(itemId)) return { updated: false, list };
 
-    list.push(itemId);
-
-    await run(
-        `UPDATE user_profile SET ${column} = ? WHERE id = 1`,
-        [JSON.stringify(list)]
-    );
-
-    return { updated: true, list };
+        list.push(itemId);
+        await run(`UPDATE user_profile SET ${column} = ? WHERE id = 1`, [JSON.stringify(list)]);
+        return { updated: true, list };
+    });
+    progressWriteQueue = operation.catch(() => undefined);
+    return operation;
 }
 
 // ── POST /progress/letters/unlock ────────────────────────────
@@ -46,6 +51,8 @@ exports.unlockLetter = async (req, res) => {
     if (!letterId) {
         return res.status(400).json({ success: false, message: 'letterId is required' });
     }
+    const invalid = validateId(letterId, 'letterId');
+    if (invalid) return res.status(400).json(invalid);
 
     try {
         const { updated, list } = await addToJsonArrayColumn('unlocked_letters', letterId);
@@ -69,6 +76,8 @@ exports.viewSong = async (req, res) => {
     if (!songId) {
         return res.status(400).json({ success: false, message: 'songId is required' });
     }
+    const invalid = validateId(songId, 'songId');
+    if (invalid) return res.status(400).json(invalid);
 
     try {
         const { updated, list } = await addToJsonArrayColumn('viewed_songs', songId);
@@ -110,6 +119,8 @@ exports.unlockAchievement = async (req, res) => {
     if (!achievementId) {
         return res.status(400).json({ success: false, message: 'achievementId is required' });
     }
+    const invalid = validateId(achievementId, 'achievementId');
+    if (invalid) return res.status(400).json(invalid);
 
     try {
         const { updated, list } = await addToJsonArrayColumn('unlocked_achievements', achievementId);
@@ -145,6 +156,8 @@ exports.findEasterEgg = async (req, res) => {
     if (!easterEggId) {
         return res.status(400).json({ success: false, message: 'easterEggId is required' });
     }
+    const invalid = validateId(easterEggId, 'easterEggId');
+    if (invalid) return res.status(400).json(invalid);
 
     try {
         const { updated, list } = await addToJsonArrayColumn('found_easter_eggs', easterEggId);
