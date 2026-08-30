@@ -54,6 +54,7 @@ const KNOWN_ACHIEVEMENT_IDS = new Set([
     'ach-first-visit', 'ach-all-actions', 'ach-read-letter',
     'ach-all-songs', 'ach-easter-egg', 'ach-night-owl',
     'ach-theme-change', 'ach-konami', 'ach-secret-zone',
+    'ach-hearts-10', 'ach-hearts-50', 'ach-hearts-100', 'ach-perfect-care',
 ]);
 
 function parseJsonArray(value) {
@@ -82,6 +83,7 @@ function progressResponse(state) {
         visitCount: state.visits || 0,
         firstVisit: state.created_at || timestamp,
         lastVisit: state.last_visit_date || timestamp,
+        totalHearts: state.total_hearts || 0,
     };
 }
 
@@ -174,11 +176,23 @@ exports.getStatus = async (req, res) => {
             }
         }
         if (!achievements.includes('ach-first-visit')) achievements.push('ach-first-visit');
+        if (state.total_hearts >= 10 && !achievements.includes('ach-hearts-10')) achievements.push('ach-hearts-10');
+        if (state.total_hearts >= 50 && !achievements.includes('ach-hearts-50')) achievements.push('ach-hearts-50');
+        if (state.total_hearts >= 100 && !achievements.includes('ach-hearts-100')) achievements.push('ach-hearts-100');
+        if (state.happiness >= 100 && state.hunger >= 100 && state.sleep >= 100 && !achievements.includes('ach-perfect-care')) {
+            achievements.push('ach-perfect-care');
+        }
+        if (parseJsonArray(state.viewed_songs).length >= 8 && !achievements.includes('ach-all-songs')) {
+            achievements.push('ach-all-songs');
+        }
 
         let letters = parseJsonArray(state.unlocked_letters);
         if (!letters.includes('letter-1')) letters.push('letter-1');
         if (streak >= 3 && !letters.includes('letter-2')) letters.push('letter-2');
         if (achievements.length >= 5 && !letters.includes('letter-3')) letters.push('letter-3');
+        if (state.total_hearts >= 10 && !letters.includes('letter-4')) letters.push('letter-4');
+        if (achievements.length >= 10 && !letters.includes('letter-5')) letters.push('letter-5');
+        if (parseJsonArray(state.viewed_songs).length >= 8 && !letters.includes('letter-6')) letters.push('letter-6');
         if (state.secret_zone_unlocked && !letters.includes('letter-secret')) letters.push('letter-secret');
 
         // 4. Persist degraded stats, streak, visit counter, and connection time
@@ -293,8 +307,21 @@ exports.performAction = async (req, res) => {
             }
         }
 
+        if (total_hearts >= 10 && !unlocked_achievements.includes('ach-hearts-10')) unlocked_achievements.push('ach-hearts-10');
+        if (total_hearts >= 50 && !unlocked_achievements.includes('ach-hearts-50')) unlocked_achievements.push('ach-hearts-50');
+        if (total_hearts >= 100 && !unlocked_achievements.includes('ach-hearts-100')) unlocked_achievements.push('ach-hearts-100');
+        if (happiness >= 100 && hunger >= 100 && sleep >= 100 && !unlocked_achievements.includes('ach-perfect-care')) {
+            unlocked_achievements.push('ach-perfect-care');
+        }
+
         if (unlocked_achievements.length >= 5 && !unlocked_letters.includes('letter-3')) {
             unlocked_letters.push('letter-3');
+        }
+        if (total_hearts >= 10 && !unlocked_letters.includes('letter-4')) {
+            unlocked_letters.push('letter-4');
+        }
+        if (unlocked_achievements.length >= 10 && !unlocked_letters.includes('letter-5')) {
+            unlocked_letters.push('letter-5');
         }
 
         // Persist

@@ -72,11 +72,29 @@ exports.viewSong = async (req, res) => {
 
     try {
         const { updated, list } = await addToJsonArrayColumn('viewed_songs', songId);
+        let unlockedAchievements;
+        let unlockedLetters;
+
+        if (list.length >= 8) {
+            const state = await query(`SELECT unlocked_achievements, unlocked_letters FROM user_profile WHERE id = 1`);
+            const achievements = parseJsonArray(state.unlocked_achievements);
+            const letters = parseJsonArray(state.unlocked_letters);
+            if (!achievements.includes('ach-all-songs')) achievements.push('ach-all-songs');
+            if (!letters.includes('letter-6')) letters.push('letter-6');
+            unlockedAchievements = achievements;
+            unlockedLetters = letters;
+            await run(
+                `UPDATE user_profile SET unlocked_achievements = ?, unlocked_letters = ? WHERE id = 1`,
+                [JSON.stringify(achievements), JSON.stringify(letters)]
+            );
+        }
 
         res.json({
             success: true,
             alreadyViewed: !updated,
             viewedSongs: list,
+            unlockedAchievements,
+            unlockedLetters,
         });
     } catch (error) {
         console.error('viewSong error:', error);
@@ -95,11 +113,23 @@ exports.unlockAchievement = async (req, res) => {
 
     try {
         const { updated, list } = await addToJsonArrayColumn('unlocked_achievements', achievementId);
+        let unlockedLetters;
+
+        if (list.length >= 10) {
+            const state = await query(`SELECT unlocked_letters FROM user_profile WHERE id = 1`);
+            const letters = parseJsonArray(state.unlocked_letters);
+            if (!letters.includes('letter-5')) {
+                letters.push('letter-5');
+                await run(`UPDATE user_profile SET unlocked_letters = ? WHERE id = 1`, [JSON.stringify(letters)]);
+            }
+            unlockedLetters = letters;
+        }
 
         res.json({
             success: true,
             alreadyUnlocked: !updated,
             unlockedAchievements: list,
+            unlockedLetters,
         });
     } catch (error) {
         console.error('unlockAchievement error:', error);

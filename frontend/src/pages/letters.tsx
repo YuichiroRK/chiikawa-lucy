@@ -3,12 +3,13 @@ import { useState } from 'react';
 import { LETTERS } from '@/utils/gameData';
 
 export default function Letters({ gameState, addNotification }: any) {
-  const { isLetterUnlocked, doUnlockLetter } = gameState;
+  const { isLetterUnlocked, doUnlockLetter, doUnlockAchievement } = gameState;
   const [selectedLetter, setSelectedLetter] = useState<any>(null);
 
   const handleOpenLetter = async (letter: typeof LETTERS[0]) => {
     if (isLetterUnlocked(letter.id)) {
       setSelectedLetter(letter);
+      await doUnlockAchievement('ach-read-letter');
     } else {
       // Try to unlock
       // En una implementación real, aquí verificaríamos si cumple la condición antes de llamar a la API

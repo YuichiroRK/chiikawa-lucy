@@ -33,6 +33,7 @@ export interface ProgressState {
   visitCount: number;
   firstVisit: string;
   lastVisit: string;
+  totalHearts: number;
 }
 
 export interface StatusResponse {

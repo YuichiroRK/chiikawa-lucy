@@ -204,9 +204,16 @@ export function useGameState(): GameState & GameActions {
     try {
       const response = await viewSong(songId);
       setProgress((prev) => {
-        if (response.viewedSongs) {
-          return { ...prev, songs: response.viewedSongs.map((id) => ({ id, viewedAt: new Date().toISOString() })) };
+        const next = response.viewedSongs
+          ? { ...prev, songs: response.viewedSongs.map((id) => ({ id, viewedAt: new Date().toISOString() })) }
+          : prev;
+        if (response.unlockedAchievements) {
+          next.achievements = response.unlockedAchievements.map((id) => ({ id, unlockedAt: new Date().toISOString() }));
         }
+        if (response.unlockedLetters) {
+          next.letters = response.unlockedLetters.map((id) => ({ id, unlockedAt: new Date().toISOString() }));
+        }
+        if (response.viewedSongs) return next;
         if (prev.songs.some((s) => s.id === songId)) return prev;
         return {
           ...prev,
@@ -223,7 +230,13 @@ export function useGameState(): GameState & GameActions {
         const response = await unlockAchievement(achievementId);
         setProgress((prev) => {
         if (response.unlockedAchievements) {
-          return { ...prev, achievements: response.unlockedAchievements.map((id) => ({ id, unlockedAt: new Date().toISOString() })) };
+          return {
+            ...prev,
+            achievements: response.unlockedAchievements.map((id) => ({ id, unlockedAt: new Date().toISOString() })),
+            letters: response.unlockedLetters
+              ? response.unlockedLetters.map((id) => ({ id, unlockedAt: new Date().toISOString() }))
+              : prev.letters,
+          };
         }
         if (prev.achievements.some((a) => a.id === achievementId)) return prev;
         return {
