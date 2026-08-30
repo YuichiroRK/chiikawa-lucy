@@ -5,6 +5,9 @@ import { DIALOGUES } from '@/utils/gameData';
 export default function Tamagotchi({ gameState, addNotification }: any) {
   const { stats, mood, doAction, actionCooldown, loading } = gameState;
   const [dialogue, setDialogue] = useState({ text: '... 🌸', emoji: '✨' });
+  const imageMood = ['happy', 'hungry', 'play', 'love', 'sleep', 'cry', 'wave', 'idle'].includes(mood)
+    ? mood
+    : 'idle';
 
   // Update dialogue based on mood randomly
   useEffect(() => {
@@ -45,9 +48,12 @@ export default function Tamagotchi({ gameState, addNotification }: any) {
         {/* Personaje */}
         <div className="w-56 h-56 bg-white/40 rounded-full flex items-center justify-center mb-8 shadow-inner relative overflow-hidden transition-all duration-300">
           <img 
-            src={`/images/chiikawa-${mood || 'idle'}.png`} 
-            alt="Chiikawa" 
-            className={`w-4/5 h-4/5 object-contain ${actionCooldown ? 'animate-wiggle' : 'animate-float'}`}
+             src={`/images/chiikawa-${imageMood}.png`}
+             alt="Chiikawa" 
+             className={`w-4/5 h-4/5 object-contain ${actionCooldown ? 'animate-wiggle' : 'animate-float'}`}
+             onError={(event) => {
+               event.currentTarget.src = '/images/chiikawa-idle.png';
+             }}
           />
         </div>
 
