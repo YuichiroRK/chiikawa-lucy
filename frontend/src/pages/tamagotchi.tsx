@@ -9,14 +9,15 @@ export default function Tamagotchi({ gameState, addNotification, registerClick, 
   const imageMood = ['happy', 'hungry', 'play', 'love', 'sleep', 'cry', 'wave', 'idle'].includes(mood)
     ? mood
     : 'idle';
-  const actionEmojis: Record<string, string[]> = {
+  const actionEmojiSets: Record<string, string[]> = {
     'theme-default': ['🍓', '💖', '🎮', '💤'],
     'theme-sakura': ['🍡', '🌸', '🎨', '🌙'],
     'theme-halloween': ['🍬', '🖤', '🎃', '🦇'],
     'theme-winter': ['🍲', '🧣', '⛄', '❄️'],
     'theme-summer': ['🍉', '☀️', '🏖️', '🕶️'],
     'theme-christmas': ['🍪', '🎁', '🎄', '🧦'],
-  }[activeTheme?.id || 'theme-default'] || ['🍓', '💖', '🎮', '💤'];
+  };
+  const actionEmojis = actionEmojiSets[activeTheme?.id || 'theme-default'] || ['🍓', '💖', '🎮', '💤'];
 
   // Update dialogue based on mood randomly
   useEffect(() => {
