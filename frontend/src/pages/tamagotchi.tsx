@@ -9,6 +9,14 @@ export default function Tamagotchi({ gameState, addNotification, registerClick, 
   const imageMood = ['happy', 'hungry', 'play', 'love', 'sleep', 'cry', 'wave', 'idle'].includes(mood)
     ? mood
     : 'idle';
+  const actionEmojis: Record<string, string[]> = {
+    'theme-default': ['🍓', '💖', '🎮', '💤'],
+    'theme-sakura': ['🍡', '🌸', '🎨', '🌙'],
+    'theme-halloween': ['🍬', '🖤', '🎃', '🦇'],
+    'theme-winter': ['🍲', '🧣', '⛄', '❄️'],
+    'theme-summer': ['🍉', '☀️', '🏖️', '🕶️'],
+    'theme-christmas': ['🍪', '🎁', '🎄', '🧦'],
+  }[activeTheme?.id || 'theme-default'] || ['🍓', '💖', '🎮', '💤'];
 
   // Update dialogue based on mood randomly
   useEffect(() => {
@@ -53,7 +61,7 @@ export default function Tamagotchi({ gameState, addNotification, registerClick, 
              onClick={() => registerClick?.('chiikawa')}
              src={`/images/chiikawa-${imageMood}.png`}
              alt="Chiikawa" 
-             className={`w-4/5 h-4/5 object-contain ${actionCooldown ? 'animate-wiggle' : 'animate-float'}`}
+             className={`w-4/5 h-4/5 object-contain ${actionCooldown ? '' : 'animate-gentle-float'}`}
              onError={(event) => {
                event.currentTarget.src = '/images/chiikawa-idle.png';
              }}
@@ -82,10 +90,10 @@ export default function Tamagotchi({ gameState, addNotification, registerClick, 
 
         {/* Botones de Acción */}
         <div className="grid grid-cols-2 gap-4 w-full">
-          <ActionButton text="Comida" icon="🍓" onClick={() => handleAction('feed')} disabled={actionCooldown} />
-          <ActionButton text="Mimos" icon="💖" onClick={() => handleAction('pet')} disabled={actionCooldown} />
-          <ActionButton text="Jugar" icon="🎮" onClick={() => handleAction('play')} disabled={actionCooldown} />
-          <ActionButton text="Dormir" icon="💤" onClick={() => handleAction('sleep')} disabled={actionCooldown} />
+          <ActionButton text="Comida" icon={actionEmojis[0]} onClick={() => handleAction('feed')} disabled={actionCooldown} />
+          <ActionButton text="Mimos" icon={actionEmojis[1]} onClick={() => handleAction('pet')} disabled={actionCooldown} />
+          <ActionButton text="Jugar" icon={actionEmojis[2]} onClick={() => handleAction('play')} disabled={actionCooldown} />
+          <ActionButton text="Dormir" icon={actionEmojis[3]} onClick={() => handleAction('sleep')} disabled={actionCooldown} />
         </div>
 
         <details className="mt-5 w-full text-center">

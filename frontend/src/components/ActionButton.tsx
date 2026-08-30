@@ -83,7 +83,7 @@ export default function ActionButton({
         }}
       >
         {/* Icon */}
-        <span className={`text-2xl ${!disabled && !cooldown ? 'animate-bounce-soft' : ''}`}>
+        <span className="text-2xl">
           {icon}
         </span>
 
