@@ -19,15 +19,28 @@ export default function Letters({ gameState, addNotification }: any) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col p-6 max-w-2xl mx-auto pb-24">
+    <div className="min-h-screen flex flex-col p-6 max-w-4xl mx-auto pb-24">
       <Head>
         <title>Cartitas 💌</title>
       </Head>
 
-      <h1 className="text-3xl font-bold text-gradient-pink mb-2 text-center animate-slide-up">Tus Cartitas</h1>
-      <p className="text-text-soft mb-8 text-center animate-slide-up">Mensajitos de amor escritos solo para ti 🌸</p>
+      <div className="relative mb-8 text-center">
+        <div className="washi-tape absolute left-1/2 top-2 h-10 w-56 -translate-x-1/2 opacity-70" />
+        <h1 className="relative text-4xl font-bold text-gradient-pink mb-2 animate-slide-up">Tus Cartitas</h1>
+        <p className="relative note-text text-xl text-text-soft animate-slide-up">Mensajitos guardados solo para ti 🌸</p>
+      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="sticker-card paper-surface rounded-2xl p-4 mb-8 max-w-md w-full mx-auto">
+        <div className="flex justify-between text-sm font-bold text-text-soft mb-2">
+          <span>Álbum de recuerdos</span>
+          <span>{gameState.unlockedLetterCount} / {LETTERS.length}</span>
+        </div>
+        <div className="h-3 rounded-full bg-white border border-pastel-pink overflow-hidden">
+          <div className="h-full bg-kawaii-pink rounded-full transition-all" style={{ width: `${(gameState.unlockedLetterCount / LETTERS.length) * 100}%` }} />
+        </div>
+      </div>
+
+      <div className="paper-surface sticker-card rounded-3xl p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {LETTERS.map((letter, index) => {
           const unlocked = isLetterUnlocked(letter.id);
           

@@ -37,7 +37,7 @@ export default function Tamagotchi({ gameState, addNotification, registerClick, 
         <title>Chiikawa 🐾</title>
       </Head>
 
-      <div className="glass-card max-w-sm w-full p-6 flex flex-col items-center animate-slide-up relative">
+      <div className="glass-card paper-surface max-w-sm w-full p-6 flex flex-col items-center animate-slide-up relative">
         
         {/* Diálogo */}
         <div className="bg-white px-4 py-3 rounded-2xl mb-6 border-2 border-pastelPink shadow-sm text-center w-full animate-bounce-soft relative">

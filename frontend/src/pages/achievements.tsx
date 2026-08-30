@@ -13,13 +13,13 @@ export default function Achievements({ gameState }: any) {
         <title>Logros 🏆</title>
       </Head>
 
-      <div className="flex items-center justify-center mb-4 text-4xl animate-bounce-soft">🏆</div>
-      <h1 className="text-3xl font-bold text-gradient-gold mb-2 text-center animate-slide-up">Tus Logros</h1>
-      <p className="text-text-soft mb-8 text-center animate-slide-up">Mira todo lo que has conseguido, Lucy ✨</p>
+      <div className="flex items-center justify-center mb-3 text-4xl animate-bounce-soft">🏆</div>
+      <h1 className="text-4xl font-bold text-gradient-gold mb-2 text-center animate-slide-up">Tu Álbum de Logros</h1>
+      <p className="note-text text-xl text-text-soft mb-8 text-center animate-slide-up">Mira todo lo que has conseguido, Lucy ✨</p>
 
       {/* Progreso General */}
       <div className="glass-card-solid p-6 mb-8 text-center animate-slide-up">
-        <h2 className="text-xl font-bold text-text-cute mb-2">Progreso Total</h2>
+          <h2 className="note-text text-2xl font-bold text-text-cute mb-2">Progreso Total</h2>
         <div className="w-full h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner border border-gray-200">
           <div 
             className="h-full transition-all duration-1000 bg-gradient-to-r from-kawaii-pink to-accent-gold"

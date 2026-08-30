@@ -1,5 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap');
 
 /* ═══════════════════════════════════════════════
    🌸 CHIIKAWA TAMAGOTCHI - Tailwind v4 Theme
@@ -30,7 +30,8 @@
 
   /* ─── Font Families ─── */
   --font-heading: 'Quicksand', sans-serif;
-  --font-body: 'Nunito', sans-serif;
+  --font-body: 'Quicksand', sans-serif;
+  --font-note: 'Caveat', cursive;
 
   /* ─── Border Radius ─── */
   --radius-kawaii: 1.5rem;
@@ -190,7 +191,9 @@ html {
 
 body {
   font-family: var(--font-body);
-  background: linear-gradient(135deg, var(--color-soft-white) 0%, var(--color-pastel-pink) 50%, var(--color-warm-cream) 100%);
+  background-color: #fff8f2;
+  background-image: radial-gradient(rgba(244, 143, 177, 0.28) 1px, transparent 1px);
+  background-size: 20px 20px;
   color: var(--color-text-cute);
   min-height: 100vh;
   overflow-x: hidden;
@@ -208,28 +211,47 @@ h1, h2, h3, h4, h5, h6 {
    ═══════════════════════════════════════════════ */
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: var(--radius-kawaii);
-  box-shadow: var(--shadow-kawaii);
+  background: rgba(255, 255, 255, 0.86);
+  border: 3px solid #fff;
+  outline: 1px solid rgba(244, 143, 177, 0.7);
+  border-radius: 1.5rem;
+  box-shadow: 4px 4px 0 rgba(236, 64, 122, 0.12);
   transition: all 0.3s ease;
 }
 
 .glass-card:hover {
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: var(--shadow-kawaii-lg);
-  transform: translateY(-2px);
+  background: #fff;
+  box-shadow: 2px 2px 0 rgba(236, 64, 122, 0.12);
+  transform: translate(2px, 2px) rotate(0.5deg);
 }
 
 .glass-card-solid {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 2px solid rgba(255, 183, 197, 0.3);
-  border-radius: var(--radius-kawaii);
-  box-shadow: var(--shadow-kawaii);
+  background: #fff8f2;
+  border: 3px solid #fff;
+  outline: 1px solid rgba(244, 143, 177, 0.7);
+  border-radius: 1.5rem;
+  box-shadow: 6px 6px 0 rgba(236, 64, 122, 0.1);
+}
+
+.sticker-card {
+  border: 3px solid #fff;
+  outline: 1px solid rgba(244, 143, 177, 0.8);
+  box-shadow: 4px 4px 0 rgba(236, 64, 122, 0.14);
+}
+
+.note-text {
+  font-family: var(--font-note);
+}
+
+.washi-tape {
+  background: rgba(244, 143, 177, 0.72);
+  transform: rotate(-1deg);
+  clip-path: polygon(1% 0, 98% 2%, 100% 95%, 2% 100%);
+}
+
+.paper-surface {
+  background-color: #fff8f2;
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(244, 143, 177, 0.13) 32px);
 }
 
 .glass-nav {
